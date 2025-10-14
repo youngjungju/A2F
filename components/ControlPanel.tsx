@@ -166,38 +166,6 @@ export default function ControlPanel({
           />
         </div>
 
-        {/* Noise Layers */}
-        <div>
-          <label
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: typography.fontSize.footnote,
-              marginBottom: spacing[8],
-              color: colors.dark.label.secondary,
-              fontWeight: typography.fontWeight.medium,
-            }}
-          >
-            <span>Noise Layers</span>
-            <span style={{ color: colors.dark.label.tertiary }}>{params.layers}</span>
-          </label>
-          <input
-            type="range"
-            min="1"
-            max="8"
-            step="1"
-            value={params.layers}
-            onChange={(e) => updateParam('layers', parseInt(e.target.value))}
-            style={{
-              width: '100%',
-              height: spacing[4],
-              borderRadius: interaction.borderRadius.full,
-              cursor: 'pointer',
-              accentColor: colors.system.blue,
-            }}
-          />
-        </div>
-
         {/* Lacunarity */}
         <div>
           <label
