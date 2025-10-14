@@ -85,9 +85,10 @@ export const noiseFragmentShader = `
   float applyHalftone(vec2 uv, float value) {
     if (u_halftonePattern == 0) return 0.0;
     vec2 st = uv * u_halftoneScale * 2.5;
-    float d = length(fract(st) - 0.5) * 2.0;
-    if (value < 0.3) return 0.0;
-    float r = ((value - 0.3) / 0.7) * 0.3 + 0.1;
+    vec2 gridPos = floor(st);
+    vec2 cellPos = fract(st);
+    float d = length(cellPos - 0.5) * 2.0;
+    float r = value * 0.4 + 0.05;
     return 1.0 - smoothstep(r - 0.02, r, d);
   }
 
