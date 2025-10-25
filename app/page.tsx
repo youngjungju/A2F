@@ -153,6 +153,44 @@ export default function Home() {
         </button>
       </div>
 
+      {/* Info Box - Bottom Right */}
+      <div
+        className="absolute z-50"
+        style={{
+          bottom: spacing[24],
+          right: spacing[24],
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: '24px',
+          padding: `${spacing[16]} ${spacing[20]}`,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+          minWidth: '283px',
+          minHeight: '83.87px',
+        }}
+      >
+        <h2
+          style={{
+            fontSize: typography.fontSize.headline,
+            fontWeight: typography.fontWeight.bold,
+            color: 'rgba(0, 0, 0, 0.9)',
+            marginBottom: spacing[8],
+          }}
+        >
+          {viewMode === '2d' ? '2D Uniform Preview' : '3D Uniform Preview'}
+        </h2>
+        <p
+          style={{
+            fontSize: typography.fontSize.footnote,
+            color: 'rgba(0, 0, 0, 0.7)',
+            lineHeight: typography.lineHeight.relaxed,
+          }}
+        >
+          {viewMode === '2d'
+            ? 'Adjust the parameters to generate your unique pattern.'
+            : 'Rotate and explore your pattern in 3D space.'}
+        </p>
+      </div>
+
       {/* Canvas Area */}
       <div className="w-full h-full">
         {viewMode === '2d' ? (

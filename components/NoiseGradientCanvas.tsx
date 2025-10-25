@@ -71,19 +71,73 @@ const fragmentShaderSource = `
   vec3 getColorFromScheme(float t) {
     t = clamp(t, 0.0, 1.0);
 
-    for(int i = 0; i < 9; i++) {
-      if(i >= u_colorStopCount - 1) break;
-
-      float pos1 = u_colorPositions[i];
-      float pos2 = u_colorPositions[i + 1];
-
-      if(t >= pos1 && t <= pos2) {
-        float blend = (t - pos1) / (pos2 - pos1);
-        return mix(u_colorValues[i], u_colorValues[i + 1], blend);
+    // Unrolled loop for WebGL compatibility
+    if (u_colorStopCount >= 2) {
+      if (t >= u_colorPositions[0] && t <= u_colorPositions[1]) {
+        float blend = (t - u_colorPositions[0]) / (u_colorPositions[1] - u_colorPositions[0]);
+        return mix(u_colorValues[0], u_colorValues[1], blend);
+      }
+    }
+    if (u_colorStopCount >= 3) {
+      if (t >= u_colorPositions[1] && t <= u_colorPositions[2]) {
+        float blend = (t - u_colorPositions[1]) / (u_colorPositions[2] - u_colorPositions[1]);
+        return mix(u_colorValues[1], u_colorValues[2], blend);
+      }
+    }
+    if (u_colorStopCount >= 4) {
+      if (t >= u_colorPositions[2] && t <= u_colorPositions[3]) {
+        float blend = (t - u_colorPositions[2]) / (u_colorPositions[3] - u_colorPositions[2]);
+        return mix(u_colorValues[2], u_colorValues[3], blend);
+      }
+    }
+    if (u_colorStopCount >= 5) {
+      if (t >= u_colorPositions[3] && t <= u_colorPositions[4]) {
+        float blend = (t - u_colorPositions[3]) / (u_colorPositions[4] - u_colorPositions[3]);
+        return mix(u_colorValues[3], u_colorValues[4], blend);
+      }
+    }
+    if (u_colorStopCount >= 6) {
+      if (t >= u_colorPositions[4] && t <= u_colorPositions[5]) {
+        float blend = (t - u_colorPositions[4]) / (u_colorPositions[5] - u_colorPositions[4]);
+        return mix(u_colorValues[4], u_colorValues[5], blend);
+      }
+    }
+    if (u_colorStopCount >= 7) {
+      if (t >= u_colorPositions[5] && t <= u_colorPositions[6]) {
+        float blend = (t - u_colorPositions[5]) / (u_colorPositions[6] - u_colorPositions[5]);
+        return mix(u_colorValues[5], u_colorValues[6], blend);
+      }
+    }
+    if (u_colorStopCount >= 8) {
+      if (t >= u_colorPositions[6] && t <= u_colorPositions[7]) {
+        float blend = (t - u_colorPositions[6]) / (u_colorPositions[7] - u_colorPositions[6]);
+        return mix(u_colorValues[6], u_colorValues[7], blend);
+      }
+    }
+    if (u_colorStopCount >= 9) {
+      if (t >= u_colorPositions[7] && t <= u_colorPositions[8]) {
+        float blend = (t - u_colorPositions[7]) / (u_colorPositions[8] - u_colorPositions[7]);
+        return mix(u_colorValues[7], u_colorValues[8], blend);
+      }
+    }
+    if (u_colorStopCount >= 10) {
+      if (t >= u_colorPositions[8] && t <= u_colorPositions[9]) {
+        float blend = (t - u_colorPositions[8]) / (u_colorPositions[9] - u_colorPositions[8]);
+        return mix(u_colorValues[8], u_colorValues[9], blend);
       }
     }
 
-    return u_colorValues[u_colorStopCount - 1];
+    // Return last color
+    if (u_colorStopCount == 1) return u_colorValues[0];
+    if (u_colorStopCount == 2) return u_colorValues[1];
+    if (u_colorStopCount == 3) return u_colorValues[2];
+    if (u_colorStopCount == 4) return u_colorValues[3];
+    if (u_colorStopCount == 5) return u_colorValues[4];
+    if (u_colorStopCount == 6) return u_colorValues[5];
+    if (u_colorStopCount == 7) return u_colorValues[6];
+    if (u_colorStopCount == 8) return u_colorValues[7];
+    if (u_colorStopCount == 9) return u_colorValues[8];
+    return u_colorValues[9];
   }
 
   float applyHalftone(vec2 uv, float value) {
@@ -142,15 +196,30 @@ export default function NoiseGradientCanvas({ params, className = '' }: NoiseGra
     gl.shaderSource(vertexShader, vertexShaderSource);
     gl.compileShader(vertexShader);
 
+    if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+      console.error('Vertex shader compilation error:', gl.getShaderInfoLog(vertexShader));
+      return;
+    }
+
     const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
     gl.shaderSource(fragmentShader, fragmentShaderSource);
     gl.compileShader(fragmentShader);
+
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+      console.error('Fragment shader compilation error:', gl.getShaderInfoLog(fragmentShader));
+      return;
+    }
 
     // Create program
     const program = gl.createProgram()!;
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error('Program linking error:', gl.getProgramInfoLog(program));
+      return;
+    }
 
     programRef.current = program;
 

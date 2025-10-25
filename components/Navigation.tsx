@@ -9,7 +9,7 @@ export default function Navigation() {
 
   const navItems = [
     { label: 'Home', href: '/' },
-    { label: 'Explore', href: '/player/park-jisung' },
+    { label: 'Explore', href: '/explore' },
     { label: 'Archive', href: '/gallery' },
   ];
 

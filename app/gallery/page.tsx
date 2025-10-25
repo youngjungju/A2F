@@ -1,10 +1,17 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { SAMPLE_PLAYERS } from '@/lib/playerData';
 import { spacing, typography, colors, interaction } from '@/lib/designTokens';
 
 export default function GalleryPage() {
+  const router = useRouter();
+
+  const handlePlayerClick = (playerId: string) => {
+    localStorage.setItem('lastViewedPlayer', playerId);
+    router.push('/explore');
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
@@ -108,10 +115,10 @@ export default function GalleryPage() {
           }}
         >
           {SAMPLE_PLAYERS.map((player) => (
-            <Link
+            <div
               key={player.id}
-              href={`/player/${player.id}`}
-              className="group relative overflow-hidden"
+              onClick={() => handlePlayerClick(player.id)}
+              className="group relative overflow-hidden cursor-pointer"
               style={{
                 backgroundColor: colors.dark.fill.primary,
                 backdropFilter: 'blur(10px)',
@@ -211,7 +218,7 @@ export default function GalleryPage() {
 
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-purple-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-            </Link>
+            </div>
           ))}
         </div>
 
