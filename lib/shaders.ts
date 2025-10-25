@@ -23,6 +23,10 @@ export const noiseFragmentShader = `
   uniform sampler2D originalTexture;
   uniform bool useOriginalTexture;
 
+  uniform int u_colorStopCount;
+  uniform float u_colorPositions[10];
+  uniform vec3 u_colorValues[10];
+
   varying vec2 vUv;
   varying vec3 vNormal;
   varying vec3 vPosition;
@@ -66,20 +70,21 @@ export const noiseFragmentShader = `
   }
 
   vec3 getColorFromScheme(float t) {
-    vec3 c[6];
-    c[0] = vec3(0.024, 0.016, 0.169); // #06042b 진한 네이비
-    c[1] = vec3(0.231, 0.102, 0.369); // #3b1a5e 진한 보라색
-    c[2] = vec3(0.722, 0.212, 0.169); // #b8362b 진한 빨간색
-    c[3] = vec3(0.847, 0.482, 0.196); // #d87b32 주황색
-    c[4] = vec3(0.580, 0.737, 0.882); // #94bce1 하늘색
-    c[5] = vec3(0.043, 0.039, 0.114); // #0b0a1d 매우 진한 네이비
+    t = clamp(t, 0.0, 1.0);
 
-    if (t < 0.09) return mix(c[0], c[1], t / 0.09);
-    if (t < 0.24) return mix(c[1], c[2], (t - 0.09) / 0.15);
-    if (t < 0.36) return mix(c[2], c[3], (t - 0.24) / 0.12);
-    if (t < 0.52) return mix(c[3], c[4], (t - 0.36) / 0.16);
-    if (t < 0.81) return mix(c[4], c[5], (t - 0.52) / 0.29);
-    return mix(c[5], c[0], (t - 0.81) / 0.19);
+    for(int i = 0; i < 9; i++) {
+      if(i >= u_colorStopCount - 1) break;
+
+      float pos1 = u_colorPositions[i];
+      float pos2 = u_colorPositions[i + 1];
+
+      if(t >= pos1 && t <= pos2) {
+        float blend = (t - pos1) / (pos2 - pos1);
+        return mix(u_colorValues[i], u_colorValues[i + 1], blend);
+      }
+    }
+
+    return u_colorValues[u_colorStopCount - 1];
   }
 
   float applyHalftone(vec2 uv, float value) {

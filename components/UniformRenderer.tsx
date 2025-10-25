@@ -45,6 +45,25 @@ function UniformMesh({ modelPath = '/assets/models/jersey_tigres/scene.gltf', pa
   useEffect(() => {
     if (!meshRef.current || !originalTexture) return;
 
+    // Prepare color stop data
+    const positions = new Float32Array(10);
+    const colorValues: THREE.Vector3[] = [];
+
+    params.colorStops.forEach((stop, i) => {
+      positions[i] = stop.position;
+      const hex = stop.color.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16) / 255;
+      const g = parseInt(hex.substring(2, 4), 16) / 255;
+      const b = parseInt(hex.substring(4, 6), 16) / 255;
+      colorValues.push(new THREE.Vector3(r, g, b));
+    });
+
+    // Fill remaining slots with last color
+    for (let i = params.colorStops.length; i < 10; i++) {
+      positions[i] = 1.0;
+      colorValues.push(colorValues[colorValues.length - 1] || new THREE.Vector3(0, 0, 0));
+    }
+
     // Create shader material with noise gradient
     const material = new THREE.ShaderMaterial({
       uniforms: {
@@ -56,6 +75,9 @@ function UniformMesh({ modelPath = '/assets/models/jersey_tigres/scene.gltf', pa
         u_warpStrength: { value: params.warpStrength },
         u_halftonePattern: { value: params.halftonePattern },
         u_halftoneScale: { value: params.halftoneScale },
+        u_colorStopCount: { value: params.colorStops.length },
+        u_colorPositions: { value: positions },
+        u_colorValues: { value: colorValues },
         originalTexture: { value: originalTexture },
         useOriginalTexture: { value: false }, // Use noise gradient by default
         cameraPosition: { value: camera.position },
@@ -93,6 +115,29 @@ function UniformMesh({ modelPath = '/assets/models/jersey_tigres/scene.gltf', pa
       materialRef.current.uniforms.u_warpStrength.value = params.warpStrength;
       materialRef.current.uniforms.u_halftonePattern.value = params.halftonePattern;
       materialRef.current.uniforms.u_halftoneScale.value = params.halftoneScale;
+
+      // Update color stops
+      materialRef.current.uniforms.u_colorStopCount.value = params.colorStops.length;
+
+      const positions = new Float32Array(10);
+      const colorValues: THREE.Vector3[] = [];
+
+      params.colorStops.forEach((stop, i) => {
+        positions[i] = stop.position;
+        const hex = stop.color.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16) / 255;
+        const g = parseInt(hex.substring(2, 4), 16) / 255;
+        const b = parseInt(hex.substring(4, 6), 16) / 255;
+        colorValues.push(new THREE.Vector3(r, g, b));
+      });
+
+      for (let i = params.colorStops.length; i < 10; i++) {
+        positions[i] = 1.0;
+        colorValues.push(colorValues[colorValues.length - 1] || new THREE.Vector3(0, 0, 0));
+      }
+
+      materialRef.current.uniforms.u_colorPositions.value = positions;
+      materialRef.current.uniforms.u_colorValues.value = colorValues;
     }
   }, [params]);
 

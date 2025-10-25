@@ -15,6 +15,11 @@ export interface PlayerData {
   birthYear?: number;
 }
 
+export interface ColorStop {
+  position: number;
+  color: string;
+}
+
 export interface NoiseParams {
   amplitude: number;
   saturation: number;
@@ -24,6 +29,7 @@ export interface NoiseParams {
   warpStrength: number;
   halftonePattern: number;
   halftoneScale: number;
+  colorStops: ColorStop[];
 }
 
 export const DEFAULT_NOISE_PARAMS: NoiseParams = {
@@ -35,4 +41,10 @@ export const DEFAULT_NOISE_PARAMS: NoiseParams = {
   warpStrength: 0.3,
   halftonePattern: 0,
   halftoneScale: 50.0,
+  colorStops: [
+    { position: 0, color: '#5B4E8E' },
+    { position: 0.5, color: '#0A1A3E' },
+    { position: 0.7, color: '#7B9FC4' },
+    { position: 1.0, color: '#B8614D' },
+  ],
 };

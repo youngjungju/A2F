@@ -26,6 +26,10 @@ const fragmentShaderSource = `
   uniform int u_halftonePattern;
   uniform float u_halftoneScale;
 
+  uniform int u_colorStopCount;
+  uniform float u_colorPositions[10];
+  uniform vec3 u_colorValues[10];
+
   // Simplex noise implementation
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -65,20 +69,21 @@ const fragmentShaderSource = `
   }
 
   vec3 getColorFromScheme(float t) {
-    vec3 c[6];
-    c[0] = vec3(0.024, 0.016, 0.169);
-    c[1] = vec3(0.231, 0.102, 0.369);
-    c[2] = vec3(0.722, 0.212, 0.169);
-    c[3] = vec3(0.847, 0.482, 0.196);
-    c[4] = vec3(0.580, 0.737, 0.882);
-    c[5] = vec3(0.043, 0.039, 0.114);
+    t = clamp(t, 0.0, 1.0);
 
-    if (t < 0.09) return mix(c[0], c[1], t / 0.09);
-    if (t < 0.24) return mix(c[1], c[2], (t - 0.09) / 0.15);
-    if (t < 0.36) return mix(c[2], c[3], (t - 0.24) / 0.12);
-    if (t < 0.52) return mix(c[3], c[4], (t - 0.36) / 0.16);
-    if (t < 0.81) return mix(c[4], c[5], (t - 0.52) / 0.29);
-    return mix(c[5], c[0], (t - 0.81) / 0.19);
+    for(int i = 0; i < 9; i++) {
+      if(i >= u_colorStopCount - 1) break;
+
+      float pos1 = u_colorPositions[i];
+      float pos2 = u_colorPositions[i + 1];
+
+      if(t >= pos1 && t <= pos2) {
+        float blend = (t - pos1) / (pos2 - pos1);
+        return mix(u_colorValues[i], u_colorValues[i + 1], blend);
+      }
+    }
+
+    return u_colorValues[u_colorStopCount - 1];
   }
 
   float applyHalftone(vec2 uv, float value) {
@@ -178,6 +183,27 @@ export default function NoiseGradientCanvas({ params, className = '' }: NoiseGra
       gl.uniform1i(gl.getUniformLocation(program, 'u_halftonePattern'), params.halftonePattern);
       gl.uniform1f(gl.getUniformLocation(program, 'u_halftoneScale'), params.halftoneScale);
 
+      // Set color stops
+      gl.uniform1i(gl.getUniformLocation(program, 'u_colorStopCount'), params.colorStops.length);
+
+      const positions = params.colorStops.map(stop => stop.position);
+      const colors = params.colorStops.flatMap(stop => {
+        const hex = stop.color.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16) / 255;
+        const g = parseInt(hex.substring(2, 4), 16) / 255;
+        const b = parseInt(hex.substring(4, 6), 16) / 255;
+        return [r, g, b];
+      });
+
+      gl.uniform1fv(gl.getUniformLocation(program, 'u_colorPositions'), positions);
+      for (let i = 0; i < params.colorStops.length; i++) {
+        const hex = params.colorStops[i].color.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16) / 255;
+        const g = parseInt(hex.substring(2, 4), 16) / 255;
+        const b = parseInt(hex.substring(4, 6), 16) / 255;
+        gl.uniform3f(gl.getUniformLocation(program, `u_colorValues[${i}]`), r, g, b);
+      }
+
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
 
@@ -218,8 +244,20 @@ export default function NoiseGradientCanvas({ params, className = '' }: NoiseGra
     gl.uniform1i(gl.getUniformLocation(program, 'u_halftonePattern'), params.halftonePattern);
     gl.uniform1f(gl.getUniformLocation(program, 'u_halftoneScale'), params.halftoneScale);
 
+    // Update color stops
+    gl.uniform1i(gl.getUniformLocation(program, 'u_colorStopCount'), params.colorStops.length);
+    const positions = params.colorStops.map(stop => stop.position);
+    gl.uniform1fv(gl.getUniformLocation(program, 'u_colorPositions'), positions);
+    for (let i = 0; i < params.colorStops.length; i++) {
+      const hex = params.colorStops[i].color.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16) / 255;
+      const g = parseInt(hex.substring(2, 4), 16) / 255;
+      const b = parseInt(hex.substring(4, 6), 16) / 255;
+      gl.uniform3f(gl.getUniformLocation(program, `u_colorValues[${i}]`), r, g, b);
+    }
+
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }, [params.amplitude, params.saturation, params.layers, params.lacunarity, params.gain, params.warpStrength, params.halftonePattern, params.halftoneScale]);
+  }, [params]);
 
   return <canvas ref={canvasRef} className={`w-full h-full ${className}`} />;
 }

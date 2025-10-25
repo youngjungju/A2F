@@ -53,12 +53,15 @@ export default function Home() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-black">
-      {/* Control Panel - Top Left */}
+      {/* Control Panel - Below Navigation */}
       <div
-        className="absolute z-40"
+        className="absolute z-50"
         style={{
-          top: spacing[24],
+          top: 'calc(24px + 40px + 25px)',
           left: spacing[24],
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
         }}
       >
         <ControlPanel
@@ -67,27 +70,87 @@ export default function Home() {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
         />
+
+        {/* Archive Uniform Button */}
+        <button
+          style={{
+            padding: '8px 12px',
+            backgroundColor: '#000000',
+            borderRadius: '6px',
+            color: colors.dark.label.primary,
+            fontSize: '11px',
+            fontWeight: typography.fontWeight.semibold,
+            border: 'none',
+            transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
+            cursor: 'pointer',
+            minHeight: '32px',
+            minWidth: '284px',
+          }}
+        >
+          Archive Uniform
+        </button>
+
+        {/* Export Uniform Button */}
+        <button
+          onClick={handleDownload}
+          style={{
+            padding: '8px 12px',
+            backgroundColor: '#000000',
+            borderRadius: '6px',
+            color: colors.dark.label.primary,
+            fontSize: '11px',
+            fontWeight: typography.fontWeight.semibold,
+            border: 'none',
+            transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
+            cursor: 'pointer',
+            minHeight: '32px',
+            minWidth: '284px',
+          }}
+        >
+          Export Uniform
+        </button>
       </div>
 
-      {/* Logo - Center Top */}
+      {/* About Button - Top Right */}
       <div
-        className="absolute left-1/2 transform -translate-x-1/2 z-30"
+        className="absolute z-50"
         style={{
           top: spacing[24],
-          cursor: 'pointer',
+          right: spacing[24],
+          backgroundColor: 'rgba(28, 28, 30, 0.95)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: '8px',
+          padding: '4px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
         }}
-        onClick={() => setShowModal(true)}
       >
-        <Image
-          src="/assets/images/logo_white.svg"
-          alt="A2F Logo"
-          width={120}
-          height={40}
+        <button
+          onClick={() => setShowModal(true)}
           style={{
-            height: '40px',
-            width: 'auto',
+            padding: '6px 10px',
+            backgroundColor: 'transparent',
+            borderRadius: '6px',
+            color: colors.dark.label.primary,
+            fontSize: '11px',
+            fontWeight: typography.fontWeight.semibold,
+            border: 'none',
+            transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
+            cursor: 'pointer',
+            minHeight: '28px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minWidth: '89.34px',
           }}
-        />
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
+        >
+          About
+        </button>
       </div>
 
       {/* Canvas Area */}
@@ -97,37 +160,6 @@ export default function Home() {
         ) : (
           <UniformRenderer params={params} autoRotate key="uniform-renderer" />
         )}
-      </div>
-
-      {/* Download/Export Button - Bottom Right */}
-      <div
-        className="absolute z-40"
-        style={{
-          bottom: spacing[24],
-          right: spacing[24],
-        }}
-      >
-        <button
-          onClick={handleDownload}
-          style={{
-            padding: `${spacing[12]} ${spacing[24]}`,
-            backgroundColor: colors.dark.fill.secondary,
-            backdropFilter: 'blur(10px)',
-            border: `1px solid ${colors.dark.fill.tertiary}`,
-            borderRadius: interaction.borderRadius.medium,
-            color: colors.dark.label.primary,
-            fontSize: typography.fontSize.body,
-            fontWeight: typography.fontWeight.medium,
-            transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
-            cursor: 'pointer',
-            minHeight: interaction.minTouchTarget,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          Download Image
-        </button>
       </div>
 
       {/* Modal */}

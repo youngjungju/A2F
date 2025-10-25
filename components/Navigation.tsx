@@ -8,10 +8,9 @@ export default function Navigation() {
   const pathname = usePathname();
 
   const navItems = [
-    { label: 'Home', href: '/about' },
-    { label: 'Media', href: '/' },
+    { label: 'Home', href: '/' },
     { label: 'Explore', href: '/player/park-jisung' },
-    { label: 'List', href: '/gallery' },
+    { label: 'Archive', href: '/gallery' },
   ];
 
   return (
@@ -19,14 +18,16 @@ export default function Navigation() {
       className="fixed z-50"
       style={{
         top: spacing[24],
-        right: spacing[24],
+        left: spacing[24],
         display: 'flex',
         flexDirection: 'row',
         backgroundColor: 'rgba(28, 28, 30, 0.95)',
         backdropFilter: 'blur(20px)',
-        borderRadius: '100px',
-        padding: spacing[8],
-        gap: spacing[4],
+        borderRadius: '8px',
+        padding: '4px',
+        gap: '4px',
+        minWidth: '284px',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
       }}
     >
       {navItems.map((item) => {
@@ -36,20 +37,20 @@ export default function Navigation() {
             key={item.href}
             href={item.href}
             style={{
-              padding: `${spacing[12]} ${spacing[24]}`,
+              flex: 1,
+              padding: '6px 10px',
               backgroundColor: isActive ? 'rgba(255, 255, 255, 0.95)' : 'transparent',
               color: isActive ? '#000000' : colors.dark.label.primary,
               textAlign: 'center',
-              fontSize: typography.fontSize.body,
+              fontSize: '11px',
               fontWeight: typography.fontWeight.semibold,
               textDecoration: 'none',
               transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
-              borderRadius: '100px',
-              minHeight: interaction.minTouchTarget,
+              borderRadius: '6px',
+              minHeight: '28px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minWidth: '64px',
             }}
             onMouseEnter={(e) => {
               if (!isActive) {

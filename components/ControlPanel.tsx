@@ -1,6 +1,6 @@
 'use client';
 
-import { NoiseParams } from '@/lib/types';
+import { NoiseParams, ColorStop } from '@/lib/types';
 import { spacing, typography, colors, interaction, shadows } from '@/lib/designTokens';
 
 interface ControlPanelProps {
@@ -22,311 +22,269 @@ export default function ControlPanel({
     onParamsChange({ ...params, [key]: value });
   };
 
+  const updateColorStop = (index: number, color: string) => {
+    const newColorStops = [...params.colorStops];
+    newColorStops[index] = { ...newColorStops[index], color };
+    onParamsChange({ ...params, colorStops: newColorStops });
+  };
+
+  const removeColorStop = (index: number) => {
+    if (params.colorStops.length > 2) {
+      const newColorStops = params.colorStops.filter((_, i) => i !== index);
+      onParamsChange({ ...params, colorStops: newColorStops });
+    }
+  };
+
+  const sectionStyle = {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    borderRadius: '8px',
+    padding: '10px',
+    minWidth: '284px',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  };
+
+  const sectionTitleStyle = {
+    fontSize: '12px',
+    fontWeight: typography.fontWeight.semibold,
+    marginBottom: '8px',
+    color: '#000000',
+  };
+
+  const labelStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontSize: '10px',
+    marginBottom: '4px',
+    color: '#000000',
+    fontWeight: typography.fontWeight.regular,
+  };
+
   return (
     <div
-      className={`backdrop-blur-lg text-white ${className}`}
+      className={className}
       style={{
-        backgroundColor: colors.dark.systemBackground.secondary,
-        borderRadius: interaction.borderRadius.large,
-        padding: spacing[16],
-        minWidth: '320px',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: shadows.large,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
       }}
     >
-      <h3
-        style={{
-          fontSize: typography.fontSize.headline,
-          fontWeight: typography.fontWeight.semibold,
-          textAlign: 'center',
-          marginBottom: spacing[16],
-          color: colors.dark.label.primary,
-        }}
-      >
-        Controls
-      </h3>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[12] }}>
-        {/* View Mode Toggle */}
-        {onViewModeChange && (
-          <div>
-            <label
+      {/* View Mode Section */}
+      {onViewModeChange && (
+        <div style={sectionStyle}>
+          <h3 style={sectionTitleStyle}>View Mode</h3>
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <button
+              onClick={() => onViewModeChange('2d')}
               style={{
-                display: 'block',
-                fontSize: typography.fontSize.footnote,
-                marginBottom: spacing[8],
-                color: colors.dark.label.secondary,
-                fontWeight: typography.fontWeight.medium,
+                flex: 1,
+                minHeight: '28px',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                fontWeight: typography.fontWeight.semibold,
+                fontSize: '11px',
+                transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
+                backgroundColor: viewMode === '2d' ? '#000000' : 'rgba(0, 0, 0, 0.05)',
+                color: viewMode === '2d' ? '#FFFFFF' : '#000000',
+                border: 'none',
+                cursor: 'pointer',
               }}
             >
-              View Mode
-            </label>
-            <div style={{ display: 'flex', gap: spacing[8] }}>
-              <button
-                onClick={() => onViewModeChange('2d')}
-                style={{
-                  flex: 1,
-                  minHeight: interaction.minTouchTarget,
-                  padding: `${spacing[8]} ${spacing[16]}`,
-                  borderRadius: interaction.borderRadius.medium,
-                  fontWeight: typography.fontWeight.medium,
-                  fontSize: typography.fontSize.body,
-                  transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
-                  backgroundColor: viewMode === '2d' ? colors.system.blue : colors.dark.fill.secondary,
-                  color: viewMode === '2d' ? '#FFFFFF' : colors.dark.label.secondary,
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                2D
-              </button>
-              <button
-                onClick={() => onViewModeChange('3d')}
-                style={{
-                  flex: 1,
-                  minHeight: interaction.minTouchTarget,
-                  padding: `${spacing[8]} ${spacing[16]}`,
-                  borderRadius: interaction.borderRadius.medium,
-                  fontWeight: typography.fontWeight.medium,
-                  fontSize: typography.fontSize.body,
-                  transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
-                  backgroundColor: viewMode === '3d' ? colors.system.blue : colors.dark.fill.secondary,
-                  color: viewMode === '3d' ? '#FFFFFF' : colors.dark.label.secondary,
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                3D
-              </button>
-            </div>
+              2D
+            </button>
+            <button
+              onClick={() => onViewModeChange('3d')}
+              style={{
+                flex: 1,
+                minHeight: '28px',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                fontWeight: typography.fontWeight.semibold,
+                fontSize: '11px',
+                transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
+                backgroundColor: viewMode === '3d' ? '#000000' : 'rgba(0, 0, 0, 0.05)',
+                color: viewMode === '3d' ? '#FFFFFF' : '#000000',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              3D
+            </button>
           </div>
-        )}
-        {/* Amplitude */}
-        <div>
-          <label
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: typography.fontSize.footnote,
-              marginBottom: spacing[8],
-              color: colors.dark.label.secondary,
-              fontWeight: typography.fontWeight.medium,
-            }}
-          >
-            <span>Amplitude</span>
-            <span style={{ color: colors.dark.label.tertiary }}>{params.amplitude.toFixed(2)}</span>
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="2"
-            step="0.01"
-            value={params.amplitude}
-            onChange={(e) => updateParam('amplitude', parseFloat(e.target.value))}
-            style={{
-              width: '100%',
-              height: spacing[4],
-              borderRadius: interaction.borderRadius.full,
-              cursor: 'pointer',
-              accentColor: colors.system.blue,
-            }}
-          />
         </div>
+      )}
 
-        {/* Saturation */}
-        <div>
-          <label
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: typography.fontSize.footnote,
-              marginBottom: spacing[8],
-              color: colors.dark.label.secondary,
-              fontWeight: typography.fontWeight.medium,
-            }}
-          >
-            <span>Saturation</span>
-            <span style={{ color: colors.dark.label.tertiary }}>{params.saturation.toFixed(2)}</span>
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="2"
-            step="0.01"
-            value={params.saturation}
-            onChange={(e) => updateParam('saturation', parseFloat(e.target.value))}
-            style={{
-              width: '100%',
-              height: spacing[4],
-              borderRadius: interaction.borderRadius.full,
-              cursor: 'pointer',
-              accentColor: colors.system.blue,
-            }}
-          />
+      {/* Color Control Section */}
+      <div style={sectionStyle}>
+        <h3 style={sectionTitleStyle}>Color Control</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {/* Header Row */}
+          <div style={{ display: 'grid', gridTemplateColumns: '35px 1fr 35px 20px', gap: '4px', paddingBottom: '4px', borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }}>
+            <span style={{ fontSize: '9px', fontWeight: typography.fontWeight.semibold, color: '#000000' }}>Portion</span>
+            <span style={{ fontSize: '9px', fontWeight: typography.fontWeight.semibold, color: '#000000' }}>Color Code</span>
+            <span></span>
+            <span></span>
+          </div>
+
+          {/* Color Rows */}
+          {params.colorStops.map((stop, index) => (
+            <div key={index} style={{ display: 'grid', gridTemplateColumns: '35px 1fr 35px 20px', gap: '4px', alignItems: 'center' }}>
+              <span style={{ fontSize: '9px', color: '#000000' }}>{Math.round(stop.position * 100)} %</span>
+              <input
+                type="color"
+                value={stop.color}
+                onChange={(e) => updateColorStop(index, e.target.value)}
+                style={{
+                  width: '100%',
+                  height: '16px',
+                  border: 'none',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                  padding: '0',
+                }}
+              />
+              <div style={{
+                height: '16px',
+                borderRadius: '3px',
+                backgroundColor: stop.color,
+                pointerEvents: 'none',
+              }}></div>
+              <button
+                onClick={() => removeColorStop(index)}
+                style={{
+                  padding: '1px',
+                  fontSize: '12px',
+                  color: '#000000',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  opacity: params.colorStops.length > 2 ? 1 : 0.3,
+                }}
+                disabled={params.colorStops.length <= 2}
+              >-</button>
+            </div>
+          ))}
         </div>
+      </div>
 
-        {/* Lacunarity */}
-        <div>
-          <label
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: typography.fontSize.footnote,
-              marginBottom: spacing[8],
-              color: colors.dark.label.secondary,
-              fontWeight: typography.fontWeight.medium,
-            }}
-          >
-            <span>Lacunarity</span>
-            <span style={{ color: colors.dark.label.tertiary }}>{params.lacunarity.toFixed(1)}</span>
-          </label>
-          <input
-            type="range"
-            min="1"
-            max="4"
-            step="0.1"
-            value={params.lacunarity}
-            onChange={(e) => updateParam('lacunarity', parseFloat(e.target.value))}
-            style={{
-              width: '100%',
-              height: spacing[4],
-              borderRadius: interaction.borderRadius.full,
-              cursor: 'pointer',
-              accentColor: colors.system.blue,
-            }}
-          />
-        </div>
+      {/* Heatmap Control Section */}
+      <div style={sectionStyle}>
+        <h3 style={sectionTitleStyle}>Heatmap Control</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {/* Saturation */}
+          <div>
+            <label style={labelStyle}>
+              <span>Saturation</span>
+              <span style={{ fontWeight: typography.fontWeight.medium }}>{params.saturation.toFixed(2)}</span>
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.01"
+              value={params.saturation}
+              onChange={(e) => updateParam('saturation', parseFloat(e.target.value))}
+              style={{
+                width: '100%',
+                height: '3px',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                accentColor: '#000000',
+              }}
+            />
+          </div>
 
-        {/* Gain */}
-        <div>
-          <label
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: typography.fontSize.footnote,
-              marginBottom: spacing[8],
-              color: colors.dark.label.secondary,
-              fontWeight: typography.fontWeight.medium,
-            }}
-          >
-            <span>Gain</span>
-            <span style={{ color: colors.dark.label.tertiary }}>{params.gain.toFixed(2)}</span>
-          </label>
-          <input
-            type="range"
-            min="0.1"
-            max="0.9"
-            step="0.05"
-            value={params.gain}
-            onChange={(e) => updateParam('gain', parseFloat(e.target.value))}
-            style={{
-              width: '100%',
-              height: spacing[4],
-              borderRadius: interaction.borderRadius.full,
-              cursor: 'pointer',
-              accentColor: colors.system.blue,
-            }}
-          />
-        </div>
+          {/* Amplitude */}
+          <div>
+            <label style={labelStyle}>
+              <span>Amplitude</span>
+              <span style={{ fontWeight: typography.fontWeight.medium }}>{params.amplitude.toFixed(2)}</span>
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.01"
+              value={params.amplitude}
+              onChange={(e) => updateParam('amplitude', parseFloat(e.target.value))}
+              style={{
+                width: '100%',
+                height: '3px',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                accentColor: '#000000',
+              }}
+            />
+          </div>
 
-        {/* Warp Strength */}
-        <div>
-          <label
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: typography.fontSize.footnote,
-              marginBottom: spacing[8],
-              color: colors.dark.label.secondary,
-              fontWeight: typography.fontWeight.medium,
-            }}
-          >
-            <span>Warp Strength</span>
-            <span style={{ color: colors.dark.label.tertiary }}>{params.warpStrength.toFixed(2)}</span>
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={params.warpStrength}
-            onChange={(e) => updateParam('warpStrength', parseFloat(e.target.value))}
-            style={{
-              width: '100%',
-              height: spacing[4],
-              borderRadius: interaction.borderRadius.full,
-              cursor: 'pointer',
-              accentColor: colors.system.blue,
-            }}
-          />
-        </div>
+          {/* Lacunarity */}
+          <div>
+            <label style={labelStyle}>
+              <span>Lacunarity</span>
+              <span style={{ fontWeight: typography.fontWeight.medium }}>{params.lacunarity.toFixed(2)}</span>
+            </label>
+            <input
+              type="range"
+              min="1"
+              max="4"
+              step="0.1"
+              value={params.lacunarity}
+              onChange={(e) => updateParam('lacunarity', parseFloat(e.target.value))}
+              style={{
+                width: '100%',
+                height: '3px',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                accentColor: '#000000',
+              }}
+            />
+          </div>
 
-        {/* Halftone Pattern */}
-        <div>
-          <label
-            style={{
-              display: 'block',
-              fontSize: typography.fontSize.footnote,
-              marginBottom: spacing[8],
-              color: colors.dark.label.secondary,
-              fontWeight: typography.fontWeight.medium,
-            }}
-          >
-            Halftone Pattern
-          </label>
-          <select
-            value={params.halftonePattern}
-            onChange={(e) => updateParam('halftonePattern', parseInt(e.target.value))}
-            style={{
-              width: '100%',
-              padding: spacing[8],
-              backgroundColor: colors.dark.fill.secondary,
-              border: `1px solid ${colors.dark.fill.tertiary}`,
-              borderRadius: interaction.borderRadius.medium,
-              color: colors.dark.label.primary,
-              fontSize: typography.fontSize.body,
-              outline: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            <option value="0">None</option>
-            <option value="1">Square</option>
-            <option value="2">Hexagonal</option>
-            <option value="3">Radial</option>
-          </select>
-        </div>
+          {/* Gain */}
+          <div>
+            <label style={labelStyle}>
+              <span>Grain</span>
+              <span style={{ fontWeight: typography.fontWeight.medium }}>{params.gain.toFixed(2)}</span>
+            </label>
+            <input
+              type="range"
+              min="0.1"
+              max="0.9"
+              step="0.05"
+              value={params.gain}
+              onChange={(e) => updateParam('gain', parseFloat(e.target.value))}
+              style={{
+                width: '100%',
+                height: '3px',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                accentColor: '#000000',
+              }}
+            />
+          </div>
 
-        {/* Halftone Scale */}
-        <div>
-          <label
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: typography.fontSize.footnote,
-              marginBottom: spacing[8],
-              color: colors.dark.label.secondary,
-              fontWeight: typography.fontWeight.medium,
-            }}
-          >
-            <span>Halftone Scale</span>
-            <span style={{ color: colors.dark.label.tertiary }}>{params.halftoneScale.toFixed(1)}</span>
-          </label>
-          <input
-            type="range"
-            min="10"
-            max="200"
-            step="5"
-            value={params.halftoneScale}
-            onChange={(e) => updateParam('halftoneScale', parseFloat(e.target.value))}
-            style={{
-              width: '100%',
-              height: spacing[4],
-              borderRadius: interaction.borderRadius.full,
-              cursor: 'pointer',
-              accentColor: colors.system.blue,
-            }}
-          />
+          {/* Warp Strength */}
+          <div>
+            <label style={labelStyle}>
+              <span>Warp Strength</span>
+              <span style={{ fontWeight: typography.fontWeight.medium }}>{params.warpStrength.toFixed(2)}</span>
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={params.warpStrength}
+              onChange={(e) => updateParam('warpStrength', parseFloat(e.target.value))}
+              style={{
+                width: '100%',
+                height: '3px',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                accentColor: '#000000',
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
