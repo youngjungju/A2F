@@ -19,7 +19,19 @@ const UniformRenderer = dynamic(() => import('@/components/UniformRenderer'), {
 export default function ExplorePage() {
   const router = useRouter();
   const [playerId, setPlayerId] = useState<string | null>(null);
-  const [noiseParams] = useState<NoiseParams>(DEFAULT_NOISE_PARAMS);
+  const [noiseParams, setNoiseParams] = useState<NoiseParams>(DEFAULT_NOISE_PARAMS);
+
+  const handleColorChange = (newColor: string) => {
+    setNoiseParams({
+      ...noiseParams,
+      colorStops: [
+        { position: 0, color: newColor },
+        { position: 0.33, color: newColor },
+        { position: 0.66, color: newColor },
+        { position: 1.0, color: newColor },
+      ],
+    });
+  };
 
   useEffect(() => {
     // localStorage에서 마지막으로 본 player ID 가져오기
@@ -163,14 +175,20 @@ export default function ExplorePage() {
                       }}
                     >
                       {club.colors.map((color, i) => (
-                        <div
+                        <input
                           key={i}
-                          className="rounded-full"
+                          type="color"
+                          defaultValue={color}
+                          onChange={(e) => handleColorChange(e.target.value)}
+                          className="rounded-full cursor-pointer transition-transform hover:scale-110"
                           style={{
                             width: spacing[32],
                             height: spacing[32],
                             backgroundColor: color,
                             border: `2px solid ${colors.dark.fill.tertiary}`,
+                            padding: 0,
+                            appearance: 'none',
+                            WebkitAppearance: 'none',
                           }}
                           title={color}
                         />

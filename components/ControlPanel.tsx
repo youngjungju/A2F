@@ -130,6 +130,12 @@ export default function ControlPanel({
           {params.colorStops.map((stop, index) => (
             <div key={index} style={{ display: 'grid', gridTemplateColumns: '35px 1fr 35px 20px', gap: '4px', alignItems: 'center' }}>
               <span style={{ fontSize: '9px', color: '#000000' }}>{Math.round(stop.position * 100)} %</span>
+              <div style={{
+                height: '16px',
+                borderRadius: '3px',
+                backgroundColor: stop.color,
+                pointerEvents: 'none',
+              }}></div>
               <input
                 type="color"
                 value={stop.color}
@@ -143,12 +149,6 @@ export default function ControlPanel({
                   padding: '0',
                 }}
               />
-              <div style={{
-                height: '16px',
-                borderRadius: '3px',
-                backgroundColor: stop.color,
-                pointerEvents: 'none',
-              }}></div>
               <button
                 onClick={() => removeColorStop(index)}
                 style={{
