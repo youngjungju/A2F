@@ -35,8 +35,9 @@ function convertPlayerRowToPlayerData(row: PlayerRow): PlayerData {
     nameKo: row['Player Name'] || 'Unknown Player',
     clubs: clubs,
     careerTimeline: [], // 필요시 계산
-    position: undefined,
+    position: row['Position'] || undefined,
     birthYear: undefined,
+    image: row['Image'] || undefined,
   };
 }
 

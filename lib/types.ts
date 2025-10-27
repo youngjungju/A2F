@@ -9,6 +9,8 @@ export interface Club {
 export interface PlayerRow {
   id: number;
   'Player Name': string | null;
+  'Position': string | null;
+  'Image': string | null;
   'Team 1': string | null;
   'Team 1 Color': string | null;
   'Team 2': string | null;
