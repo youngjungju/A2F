@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { DEFAULT_NOISE_PARAMS, NoiseParams } from '@/lib/types';
-import { getPlayerById } from '@/lib/playerData';
+import { DEFAULT_NOISE_PARAMS, NoiseParams, PlayerData } from '@/lib/types';
+import { getPlayerById, getPlayerByIdFromSupabase, createArchive, testSupabaseConnection } from '@/lib/playerData';
 import { spacing, typography, colors, interaction } from '@/lib/designTokens';
 
 const UniformRenderer = dynamic(() => import('@/components/UniformRenderer'), {
@@ -19,7 +19,10 @@ const UniformRenderer = dynamic(() => import('@/components/UniformRenderer'), {
 export default function ExplorePage() {
   const router = useRouter();
   const [playerId, setPlayerId] = useState<string | null>(null);
+  const [player, setPlayer] = useState<PlayerData | null>(null);
   const [noiseParams, setNoiseParams] = useState<NoiseParams>(DEFAULT_NOISE_PARAMS);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleColorChange = (newColor: string) => {
     setNoiseParams({
@@ -33,19 +36,93 @@ export default function ExplorePage() {
     });
   };
 
-  useEffect(() => {
-    // localStorage에서 마지막으로 본 player ID 가져오기
-    const lastPlayerId = localStorage.getItem('lastViewedPlayer');
-    if (lastPlayerId) {
-      setPlayerId(lastPlayerId);
-    } else {
-      // 기본값으로 park-jisung 설정
-      setPlayerId('park-jisung');
-      localStorage.setItem('lastViewedPlayer', 'park-jisung');
+  const handleSaveArchive = async () => {
+    if (!playerId || !player) return;
+
+    setIsSaving(true);
+    try {
+      const archive = await createArchive({
+        player_id: playerId,
+        noise_params: noiseParams,
+        title: `${player.name} - Archive`,
+        description: 'Generated from explore page',
+      });
+
+      if (archive) {
+        alert('Archive saved successfully!');
+      } else {
+        alert('Failed to save archive');
+      }
+    } catch (error) {
+      console.error('Error saving archive:', error);
+      alert('Error saving archive');
+    } finally {
+      setIsSaving(false);
     }
+  };
+
+  useEffect(() => {
+    const loadPlayer = async () => {
+      setIsLoading(true);
+
+      // Supabase 연결 테스트
+      await testSupabaseConnection();
+
+      // localStorage에서 마지막으로 본 player ID 가져오기
+      let lastPlayerId = localStorage.getItem('lastViewedPlayer');
+
+      // 유효하지 않은 값이면 기본값으로 설정
+      const parsedId = lastPlayerId ? parseInt(lastPlayerId, 10) : NaN;
+      if (!lastPlayerId || isNaN(parsedId) || parsedId < 1) {
+        console.log('Invalid or missing player ID, using default (1)');
+        lastPlayerId = '1'; // 기본값: 박지성
+        localStorage.setItem('lastViewedPlayer', lastPlayerId);
+      }
+
+      console.log('Loading player with ID:', lastPlayerId);
+      setPlayerId(lastPlayerId);
+
+      // Supabase에서 데이터 가져오기 시도
+      const supabasePlayer = await getPlayerByIdFromSupabase(parseInt(lastPlayerId, 10));
+
+      if (supabasePlayer) {
+        setPlayer(supabasePlayer);
+        localStorage.setItem('lastViewedPlayer', lastPlayerId);
+
+        // 클럽 색상들로 노이즈 파라미터 생성
+        if (supabasePlayer.clubs.length > 0) {
+          const colorStops = supabasePlayer.clubs.map((club, index) => {
+            const totalClubs = supabasePlayer.clubs.length;
+            return {
+              position: index / (totalClubs - 1 || 1),
+              color: club.colors[0] || '#FFFFFF',
+            };
+          });
+
+          setNoiseParams({
+            ...DEFAULT_NOISE_PARAMS,
+            colorStops,
+          });
+        }
+      } else {
+        // Fallback to local data
+        const localPlayer = getPlayerById(lastPlayerId);
+        if (localPlayer) {
+          setPlayer(localPlayer);
+        } else {
+          // 최후의 수단: ID 1로 다시 시도
+          const fallbackPlayer = await getPlayerByIdFromSupabase('1');
+          setPlayer(fallbackPlayer);
+        }
+      }
+
+      setIsLoading(false);
+    };
+
+    loadPlayer();
   }, []);
 
-  if (!playerId) {
+  if (isLoading || !playerId) {
     return (
       <div className="w-screen h-screen flex items-center justify-center bg-black text-white">
         <div className="text-center">
@@ -54,8 +131,6 @@ export default function ExplorePage() {
       </div>
     );
   }
-
-  const player = getPlayerById(playerId);
 
   if (!player) {
     return (
@@ -200,7 +275,8 @@ export default function ExplorePage() {
                         color: colors.dark.label.tertiary,
                       }}
                     >
-                      {club.years} {club.years > 1 ? 'years' : 'year'} • {club.percentage}% of career
+                      {club.percentage.toFixed(1)}% of career
+                      {club.years > 0 && ` • ${club.years} ${club.years > 1 ? 'years' : 'year'}`}
                     </p>
                   </div>
                 ))}
@@ -272,10 +348,28 @@ export default function ExplorePage() {
               style={{
                 fontSize: typography.fontSize.footnote,
                 color: colors.dark.label.secondary,
+                marginBottom: spacing[16],
               }}
             >
               마우스로 드래그하여 회전, 스크롤로 확대/축소할 수 있습니다.
             </p>
+            <button
+              onClick={handleSaveArchive}
+              disabled={isSaving}
+              className="w-full transition-all hover:opacity-80 disabled:opacity-50"
+              style={{
+                backgroundColor: colors.dark.fill.tertiary,
+                color: colors.dark.label.primary,
+                padding: `${spacing[12]}px ${spacing[24]}px`,
+                borderRadius: interaction.borderRadius.medium,
+                fontSize: typography.fontSize.body,
+                fontWeight: typography.fontWeight.semibold,
+                border: 'none',
+                cursor: isSaving ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {isSaving ? 'Saving...' : 'Save to Archive'}
+            </button>
           </div>
         </div>
       </div>

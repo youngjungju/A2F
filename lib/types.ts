@@ -5,6 +5,24 @@ export interface Club {
   percentage: number;
 }
 
+// Supabase Player 테이블 구조
+export interface PlayerRow {
+  id: number;
+  'Player Name': string | null;
+  'Team 1': string | null;
+  'Team 1 Color': string | null;
+  'Team 2': string | null;
+  'Team 2 Color': string | null;
+  'Team 3': string | null;
+  'Team 3 Color': string | null;
+  'Team 4': string | null;
+  'Team 4 Color': string | null;
+  'Team 5': string | null;
+  'Team 5 Color': string | null;
+  'Team 6': string | null;
+  'Team 6 Color': string | null;
+}
+
 export interface PlayerData {
   id: string;
   name: string;
@@ -13,6 +31,16 @@ export interface PlayerData {
   careerTimeline: number[];
   position?: string;
   birthYear?: number;
+}
+
+export interface Archive {
+  id?: string;
+  player_id: string;
+  created_at?: string;
+  noise_params: NoiseParams;
+  thumbnail_url?: string;
+  title?: string;
+  description?: string;
 }
 
 export interface ColorStop {
