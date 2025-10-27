@@ -31,6 +31,7 @@ export interface PlayerData {
   careerTimeline: number[];
   position?: string;
   birthYear?: number;
+  image?: string;
 }
 
 export interface Archive {
