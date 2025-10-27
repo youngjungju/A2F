@@ -43,7 +43,12 @@ export default function ArchivePage() {
 
     // Filter by position
     if (selectedPosition !== 'All Position') {
-      filtered = filtered.filter((player) => player.position === selectedPosition);
+      filtered = filtered.filter((player) => {
+        if (!player.position) return false;
+        // Split by comma and check if any position matches
+        const playerPositions = player.position.split(',').map(p => p.trim());
+        return playerPositions.includes(selectedPosition);
+      });
     }
 
     setFilteredPlayers(filtered);
@@ -54,8 +59,32 @@ export default function ArchivePage() {
     router.push('/explore');
   };
 
-  // Get unique positions from players
-  const positions = ['All Position', ...new Set(players.map((p) => p.position || 'Position'))];
+  // Get unique positions from players (split by comma and remove duplicates)
+  const uniquePositions = Array.from(new Set(
+    players.flatMap((p) => {
+      if (!p.position) return [];
+      return p.position.split(',').map(pos => pos.trim());
+    })
+  ));
+
+  // Sort positions by category: 공격 -> 미드필더 -> 수비 -> 골키퍼
+  const positionOrder = ['FW', 'ST', 'CF', 'LW', 'RW', 'SS', 'AM', 'MF', 'CM', 'DM', 'LM', 'RM', 'DF', 'CB', 'LB', 'RB', 'WB', 'GK'];
+  const sortedPositions = uniquePositions.sort((a, b) => {
+    const indexA = positionOrder.indexOf(a);
+    const indexB = positionOrder.indexOf(b);
+
+    // If both positions are in the order list, sort by their index
+    if (indexA !== -1 && indexB !== -1) {
+      return indexA - indexB;
+    }
+    // If only one is in the list, prioritize it
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+    // Otherwise, sort alphabetically
+    return a.localeCompare(b);
+  });
+
+  const positions = ['All Position', ...sortedPositions];
 
   if (isLoading) {
     return (
