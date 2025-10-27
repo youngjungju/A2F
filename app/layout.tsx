@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ArchiveAtlas",
+  title: "A2F",
   description: "Interactive atlas documenting Korean footballers' overseas careers",
 };
 

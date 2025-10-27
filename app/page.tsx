@@ -113,7 +113,7 @@ export default function Home() {
 
       {/* About Button - Top Right */}
       <div
-        className="absolute z-50"
+        className="fixed z-50"
         style={{
           top: spacing[24],
           right: spacing[24],

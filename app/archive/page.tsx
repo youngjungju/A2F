@@ -11,166 +11,205 @@ import { spacing, typography, colors, interaction } from '@/lib/designTokens';
 export default function ArchivePage() {
   const router = useRouter();
   const [players, setPlayers] = useState<PlayerData[]>([]);
+  const [filteredPlayers, setFilteredPlayers] = useState<PlayerData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedPosition, setSelectedPosition] = useState('All Position');
 
   useEffect(() => {
     const loadPlayers = async () => {
       setIsLoading(true);
       const data = await getAllPlayersFromSupabase();
       setPlayers(data);
+      setFilteredPlayers(data);
       setIsLoading(false);
     };
 
     loadPlayers();
   }, []);
 
+  useEffect(() => {
+    let filtered = players;
+
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter(
+        (player) =>
+          player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          player.nameKo.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Filter by position
+    if (selectedPosition !== 'All Position') {
+      filtered = filtered.filter((player) => player.position === selectedPosition);
+    }
+
+    setFilteredPlayers(filtered);
+  }, [searchQuery, selectedPosition, players]);
+
   const handlePlayerClick = (player: PlayerData) => {
-    // Player ID를 localStorage에 저장하고 explore 페이지로 이동
     localStorage.setItem('lastViewedPlayer', player.id);
     router.push('/explore');
   };
 
+  // Get unique positions from players
+  const positions = ['All Position', ...new Set(players.map((p) => p.position || 'Position'))];
+
   if (isLoading) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center bg-black text-white">
+      <div className="w-screen h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Loading Players...</h1>
+          <h1 className="text-4xl font-bold mb-4 text-black">Loading Players...</h1>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative w-screen min-h-screen bg-black text-white">
+    <div className="relative w-screen min-h-screen bg-white">
+      {/* Search and Filter Section - Fixed position below Navigation */}
       <div
+        className="fixed z-50"
         style={{
-          padding: spacing[48],
+          top: `calc(${spacing[24]} + 40px + 15px)`, // Navigation top + Navigation height + 15px gap
+          left: spacing[24],
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '15px',
+          minWidth: '284px', // Same as Navigation
         }}
       >
-        {/* Header */}
-        <div
+        {/* Search Input */}
+        <input
+          type="text"
+          placeholder="Search players..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           style={{
-            marginBottom: spacing[48],
+            width: '100%',
+            padding: `${spacing[12]} ${spacing[16]}`,
+            backgroundColor: '#E5E5E5',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: typography.fontSize.body,
+            color: '#000000',
+            outline: 'none',
+          }}
+        />
+
+        {/* Position Dropdown */}
+        <select
+          value={selectedPosition}
+          onChange={(e) => setSelectedPosition(e.target.value)}
+          style={{
+            width: '100%',
+            padding: `${spacing[12]} ${spacing[16]}`,
+            backgroundColor: '#E5E5E5',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: typography.fontSize.body,
+            color: '#000000',
+            outline: 'none',
+            appearance: 'none',
+            cursor: 'pointer',
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23000000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right 16px center',
+            paddingRight: spacing[40],
           }}
         >
-          <h1
-            style={{
-              fontSize: typography.fontSize.displayLarge,
-              fontWeight: typography.fontWeight.bold,
-              marginBottom: spacing[16],
-              color: colors.dark.label.primary,
-            }}
-          >
-            Archive
-          </h1>
-          <p
-            style={{
-              fontSize: typography.fontSize.title2,
-              color: colors.dark.label.secondary,
-            }}
-          >
-            {players.length} player uniforms
-          </p>
-        </div>
+          {positions.map((position) => (
+            <option key={position} value={position}>
+              {position}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div
+        style={{
+          marginLeft: 'calc(284px + 48px)', // Navigation width + spacing
+          marginRight: spacing[24],
+          paddingTop: `calc(${spacing[24]} + 40px + 15px)`, // About button top + height + 15px gap
+          paddingLeft: spacing[24],
+          paddingRight: spacing[24],
+          paddingBottom: 0,
+        }}
+      >
 
         {/* Player Grid */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: spacing[24],
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: spacing[32],
+            paddingBottom: spacing[48],
           }}
         >
-          {players.map((player) => (
+          {filteredPlayers.map((player) => (
             <div
               key={player.id}
               onClick={() => handlePlayerClick(player)}
-              className="cursor-pointer transition-all hover:scale-105"
+              className="cursor-pointer transition-all hover:opacity-80"
               style={{
-                backgroundColor: colors.dark.fill.primary,
-                borderRadius: interaction.borderRadius.large,
-                padding: spacing[24],
-                border: `1px solid ${colors.dark.fill.tertiary}`,
+                minWidth: '210.96px', // 80% of 263.7px
               }}
             >
-              {/* Color Preview */}
+              {/* Player Image */}
               <div
                 style={{
-                  height: '160px',
-                  borderRadius: interaction.borderRadius.medium,
-                  marginBottom: spacing[16],
-                  background:
-                    player.clubs.length > 0
-                      ? `linear-gradient(135deg, ${player.clubs
-                          .map((club) => club.colors[0])
-                          .join(', ')})`
-                      : colors.dark.fill.secondary,
+                  width: '100%',
+                  height: '295.34px', // 80% of 369.18px
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  marginBottom: spacing[12],
+                  position: 'relative',
                 }}
-              />
+              >
+                <Image
+                  src={player.image || '/assets/images/lee.png'}
+                  alt={player.name}
+                  fill
+                  style={{
+                    objectFit: 'cover',
+                  }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/assets/images/lee.png';
+                  }}
+                />
+              </div>
 
-              {/* Title */}
+              {/* Player Name */}
               <h3
                 style={{
-                  fontSize: typography.fontSize.headline,
-                  fontWeight: typography.fontWeight.semibold,
-                  marginBottom: spacing[8],
-                  color: colors.dark.label.primary,
+                  fontSize: typography.fontSize.body,
+                  fontWeight: typography.fontWeight.regular,
+                  color: '#000000',
+                  marginBottom: spacing[4],
                 }}
               >
                 {player.name}
               </h3>
 
-              {/* Korean Name */}
+              {/* Player Position */}
               <p
                 style={{
                   fontSize: typography.fontSize.body,
-                  color: colors.dark.label.secondary,
-                  marginBottom: spacing[12],
+                  fontWeight: typography.fontWeight.regular,
+                  color: '#000000',
                 }}
               >
-                {player.nameKo}
+                {player.position || 'Position'}
               </p>
-
-              {/* Clubs Info */}
-              <p
-                style={{
-                  fontSize: typography.fontSize.footnote,
-                  color: colors.dark.label.tertiary,
-                  marginBottom: spacing[16],
-                }}
-              >
-                {player.clubs.length} clubs
-              </p>
-
-              {/* Color Stops */}
-              <div
-                style={{
-                  display: 'flex',
-                  gap: spacing[8],
-                  flexWrap: 'wrap',
-                }}
-              >
-                {player.clubs.map((club, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      width: spacing[24],
-                      height: spacing[24],
-                      borderRadius: '50%',
-                      backgroundColor: club.colors[0],
-                      border: `2px solid ${colors.dark.fill.tertiary}`,
-                    }}
-                    title={`${club.name} - ${club.percentage.toFixed(1)}%`}
-                  />
-                ))}
-              </div>
             </div>
           ))}
         </div>
 
         {/* Empty State */}
-        {players.length === 0 && (
+        {filteredPlayers.length === 0 && (
           <div
             style={{
               textAlign: 'center',
@@ -182,7 +221,7 @@ export default function ArchivePage() {
                 fontSize: typography.fontSize.title1,
                 fontWeight: typography.fontWeight.semibold,
                 marginBottom: spacing[16],
-                color: colors.dark.label.secondary,
+                color: '#000000',
               }}
             >
               No players found
@@ -190,10 +229,10 @@ export default function ArchivePage() {
             <p
               style={{
                 fontSize: typography.fontSize.body,
-                color: colors.dark.label.tertiary,
+                color: '#666666',
               }}
             >
-              Please check your database connection
+              Try adjusting your search or filter
             </p>
           </div>
         )}
@@ -201,7 +240,7 @@ export default function ArchivePage() {
 
       {/* About Button - Top Right */}
       <div
-        className="absolute z-50"
+        className="fixed z-50"
         style={{
           top: spacing[24],
           right: spacing[24],
