@@ -169,6 +169,7 @@ interface UniformRendererProps {
   autoRotate?: boolean;
   modelPath?: string;
   className?: string;
+  transparentBackground?: boolean;
 }
 
 export default function UniformRenderer({
@@ -176,6 +177,7 @@ export default function UniformRenderer({
   autoRotate = true,
   modelPath,
   className = '',
+  transparentBackground = false,
 }: UniformRendererProps) {
   return (
     <div className={`w-full h-full ${className}`}>
@@ -187,10 +189,11 @@ export default function UniformRenderer({
           preserveDrawingBuffer: true,
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.2,
+          alpha: transparentBackground,
         }}
       >
-        <color attach="background" args={['#1a1a1a']} />
-        <fog attach="fog" args={['#1a1a1a', 5, 15]} />
+        {!transparentBackground && <color attach="background" args={['#1a1a1a']} />}
+        {!transparentBackground && <fog attach="fog" args={['#1a1a1a', 5, 15]} />}
 
         {/* Lighting Setup for Jersey */}
         <ambientLight intensity={0.8} />
@@ -228,7 +231,13 @@ export default function UniformRenderer({
         {/* Ground Plane */}
         <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow position={[0, -1, 0]}>
           <circleGeometry args={[8, 64]} />
-          <meshStandardMaterial color="#0a0a0a" roughness={0.8} metalness={0.2} />
+          <meshStandardMaterial
+            color="#0a0a0a"
+            roughness={0.8}
+            metalness={0.2}
+            transparent={true}
+            opacity={0}
+          />
         </mesh>
 
         {/* 3D Jersey Model */}

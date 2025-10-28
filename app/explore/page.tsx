@@ -9,11 +9,7 @@ import Navigation from '@/components/Navigation';
 
 const UniformRenderer = dynamic(() => import('@/components/UniformRenderer'), {
   ssr: false,
-  loading: () => (
-    <div className="w-full h-full flex items-center justify-center bg-gray-900">
-      <p className="text-white">Loading 3D uniform...</p>
-    </div>
-  ),
+  loading: () => null,
 });
 
 export default function ExplorePage() {
@@ -435,9 +431,28 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      {/* Canvas Area */}
-      <div className="w-full h-full">
-        <UniformRenderer params={noiseParams} autoRotate />
+      {/* Background Player Image */}
+      {player.image && (
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${player.image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            zIndex: 1,
+          }}
+        />
+      )}
+
+      {/* 3D Uniform with Transparent Background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          zIndex: 10,
+        }}
+      >
+        <UniformRenderer params={noiseParams} autoRotate transparentBackground />
       </div>
     </div>
   );
