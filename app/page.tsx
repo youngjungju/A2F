@@ -1,8 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import NoiseGradientCanvas from '@/components/NoiseGradientCanvas';
 import ControlPanel from '@/components/ControlPanel';
@@ -22,7 +20,7 @@ const UniformRenderer = dynamic(() => import('@/components/UniformRenderer'), {
 export default function Home() {
   const [params, setParams] = useState<NoiseParams>(DEFAULT_NOISE_PARAMS);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('3d');
-  const [showModal, setShowModal] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
 
   const handleDownload = () => {
     // Find the canvas element (works for both 2D and 3D)
@@ -111,47 +109,135 @@ export default function Home() {
         </button>
       </div>
 
-      {/* About Button - Top Right */}
+      {/* About Button - Top Right (Fixed Position) */}
       <div
         className="fixed z-50"
         style={{
           top: spacing[24],
           right: spacing[24],
-          backgroundColor: 'rgba(28, 28, 30, 0.95)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '8px',
-          padding: '4px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
         }}
       >
-        <button
-          onClick={() => setShowModal(true)}
+        {/* About Button */}
+        <div
           style={{
-            padding: '6px 10px',
-            backgroundColor: 'transparent',
-            borderRadius: '6px',
-            color: colors.dark.label.primary,
-            fontSize: '11px',
-            fontWeight: typography.fontWeight.semibold,
-            border: 'none',
-            transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
-            cursor: 'pointer',
-            minHeight: '28px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minWidth: '89.34px',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
+            backgroundColor: 'rgba(28, 28, 30, 0.95)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '8px',
+            padding: '4px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
           }}
         >
-          About
-        </button>
+          <button
+            onClick={() => setShowAbout(!showAbout)}
+            style={{
+              padding: '6px 10px',
+              backgroundColor: showAbout ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              borderRadius: '6px',
+              color: colors.dark.label.primary,
+              fontSize: '11px',
+              fontWeight: typography.fontWeight.semibold,
+              border: 'none',
+              transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
+              cursor: 'pointer',
+              minHeight: '28px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minWidth: '89.34px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            }}
+            onMouseLeave={(e) => {
+              if (!showAbout) {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }
+            }}
+          >
+            About
+          </button>
+        </div>
       </div>
+
+      {/* About Info Box - Below About Button */}
+      {showAbout && (
+        <div
+          className="fixed z-50"
+          style={{
+            top: `calc(${spacing[24]} + 40px + ${spacing[12]})`,
+            right: spacing[24],
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(40px)',
+              borderRadius: '24px',
+              padding: '12px',
+              maxWidth: '320px',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+            }}
+          >
+            {/* Title */}
+            <h3
+              style={{
+                fontSize: typography.fontSize.title3,
+                fontWeight: typography.fontWeight.bold,
+                color: 'rgba(0, 0, 0, 0.9)',
+                marginBottom: '11px',
+              }}
+            >
+              A2F: From Archive to Football
+            </h3>
+
+            {/* Divider */}
+            <div
+              style={{
+                width: '100%',
+                height: '1px',
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                marginBottom: '11px',
+              }}
+            />
+
+            {/* Description */}
+            <p
+              style={{
+                fontSize: typography.fontSize.footnote,
+                color: 'rgba(0, 0, 0, 0.7)',
+                lineHeight: typography.lineHeight.relaxed,
+                marginBottom: spacing[20],
+              }}
+            >
+              A2F is an archival project that visualizes the career data of Korean football players who have played abroad. Expanding the concept of the football heatmap, it generates unique color patterns by combining each player&apos;s duration of stay with the uniform colors of their clubs, exploring the transformation of statistical data into visual identity.
+            </p>
+
+            {/* Contact Info */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: spacing[8],
+                fontSize: typography.fontSize.footnote,
+                color: 'rgba(0, 0, 0, 0.7)',
+              }}
+            >
+              <div style={{ display: 'flex', gap: spacing[16] }}>
+                <span style={{ minWidth: '70px', fontWeight: typography.fontWeight.medium }}>
+                  Email
+                </span>
+                <span>johnwkim82@gmail.com</span>
+              </div>
+              <div style={{ display: 'flex', gap: spacing[16] }}>
+                <span style={{ minWidth: '70px', fontWeight: typography.fontWeight.medium }}>
+                  Instagram
+                </span>
+                <span>joelkim.82</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Info Box - Bottom Right */}
       <div
@@ -199,154 +285,6 @@ export default function Home() {
           <UniformRenderer params={params} autoRotate key="uniform-renderer" />
         )}
       </div>
-
-      {/* Modal */}
-      {showModal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center"
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.4)',
-            backdropFilter: 'blur(20px)',
-            padding: spacing[24],
-          }}
-          onClick={() => setShowModal(false)}
-        >
-          <div
-            className="relative"
-            style={{
-              position: 'relative',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button - Outside the box */}
-            <button
-              onClick={() => setShowModal(false)}
-              style={{
-                position: 'absolute',
-                top: `-${spacing[32]}`,
-                right: `-${spacing[32]}`,
-                width: spacing[32],
-                height: spacing[32],
-                borderRadius: '50%',
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(10px)',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: typography.fontSize.headline,
-                color: 'rgba(0, 0, 0, 0.5)',
-                transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                zIndex: 10,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 1)';
-                e.currentTarget.style.color = 'rgba(0, 0, 0, 0.8)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-                e.currentTarget.style.color = 'rgba(0, 0, 0, 0.5)';
-              }}
-            >
-              ×
-            </button>
-
-            {/* Modal Content Box */}
-            <div
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(40px)',
-                borderRadius: '32px',
-                padding: `${spacing[40]} ${spacing[32]}`,
-                maxWidth: '480px',
-                width: '100%',
-                boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-
-              {/* Logo */}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginBottom: spacing[24],
-                }}
-              >
-                <Image
-                  src="/assets/images/logo_white.svg"
-                  alt="ArchiveAtlas Logo"
-                  width={84}
-                  height={28}
-                  style={{
-                    height: '28px',
-                    filter: 'invert(1)',
-                  }}
-                />
-              </div>
-
-              {/* Content */}
-              <div
-                style={{
-                  color: 'rgba(0, 0, 0, 0.85)',
-                  lineHeight: typography.lineHeight.relaxed,
-                }}
-              >
-                <p
-                  style={{
-                    fontSize: typography.fontSize.subheadline,
-                    marginBottom: spacing[20],
-                    fontWeight: typography.fontWeight.regular,
-                  }}
-                >
-                  ArchiveAtlas is a graduation project that visually documents the overseas careers of Korean footballers. It takes a narrative approach to data and reconstructs it into an interactive atlas to trace patterns of movement and adaptation.
-                </p>
-
-                <p
-                  style={{
-                    fontSize: typography.fontSize.subheadline,
-                    marginBottom: spacing[32],
-                    fontWeight: typography.fontWeight.regular,
-                  }}
-                >
-                  For a full introduction to the project, click the Home button below.
-                </p>
-
-                {/* Home Button */}
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <Link
-                    href="/about"
-                    onClick={() => setShowModal(false)}
-                    style={{
-                      padding: `${spacing[12]} ${spacing[40]}`,
-                      backgroundColor: '#60A5FA',
-                      color: '#000000',
-                      fontSize: typography.fontSize.body,
-                      fontWeight: typography.fontWeight.semibold,
-                      borderRadius: interaction.borderRadius.medium,
-                      textDecoration: 'none',
-                      transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
-                      minHeight: interaction.minTouchTarget,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#3B82F6';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#60A5FA';
-                    }}
-                  >
-                    Home
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
