@@ -56,10 +56,10 @@ export const margins = {
 // ============================================================================
 export const typography = {
   fontFamily: {
-    system: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif',
-    display: '"SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
-    text: '"SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif',
-    mono: '"SF Mono", Monaco, "Courier New", monospace',
+    system: '"Helvetica", -apple-system, BlinkMacSystemFont, sans-serif',
+    display: '"Helvetica", -apple-system, BlinkMacSystemFont, sans-serif',
+    text: '"Helvetica", -apple-system, BlinkMacSystemFont, sans-serif',
+    mono: '"Helvetica", monospace',
   },
 
   // iOS/macOS Typography Scale (scaled to 80%)

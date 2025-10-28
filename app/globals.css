@@ -1,75 +1,59 @@
 @import "tailwindcss";
 
-/* Pretendard Font */
+/* Helvetica Font */
 @font-face {
-  font-family: 'Pretendard';
-  font-weight: 900;
-  font-style: normal;
-  src: url('/assets/fonts/pretendard/Pretendard-Black.ttf') format('truetype');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 800;
-  font-style: normal;
-  src: url('/assets/fonts/pretendard/Pretendard-ExtraBold.ttf') format('truetype');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
+  font-family: 'Helvetica';
   font-weight: 700;
   font-style: normal;
-  src: url('/assets/fonts/pretendard/Pretendard-Bold.ttf') format('truetype');
+  src: url('/assets/fonts/helvetica/Helvetica-Bold.ttf') format('truetype');
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Pretendard';
-  font-weight: 600;
-  font-style: normal;
-  src: url('/assets/fonts/pretendard/Pretendard-SemiBold.ttf') format('truetype');
+  font-family: 'Helvetica';
+  font-weight: 700;
+  font-style: italic;
+  src: url('/assets/fonts/helvetica/Helvetica-BoldOblique.ttf') format('truetype');
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Pretendard';
-  font-weight: 500;
-  font-style: normal;
-  src: url('/assets/fonts/pretendard/Pretendard-Medium.ttf') format('truetype');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Pretendard';
+  font-family: 'Helvetica';
   font-weight: 400;
   font-style: normal;
-  src: url('/assets/fonts/pretendard/Pretendard-Regular.ttf') format('truetype');
+  src: url('/assets/fonts/helvetica/Helvetica.ttf') format('truetype');
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Pretendard';
+  font-family: 'Helvetica';
+  font-weight: 400;
+  font-style: italic;
+  src: url('/assets/fonts/helvetica/Helvetica-Oblique.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica';
   font-weight: 300;
   font-style: normal;
-  src: url('/assets/fonts/pretendard/Pretendard-Light.ttf') format('truetype');
+  src: url('/assets/fonts/helvetica/helvetica-light-587ebe5a59211.ttf') format('truetype');
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Pretendard';
-  font-weight: 200;
+  font-family: 'Helvetica Rounded';
+  font-weight: 700;
   font-style: normal;
-  src: url('/assets/fonts/pretendard/Pretendard-ExtraLight.ttf') format('truetype');
+  src: url('/assets/fonts/helvetica/helvetica-rounded-bold-5871d05ead8de.otf') format('opentype');
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Pretendard';
-  font-weight: 100;
+  font-family: 'Helvetica Compressed';
+  font-weight: 400;
   font-style: normal;
-  src: url('/assets/fonts/pretendard/Pretendard-Thin.ttf') format('truetype');
+  src: url('/assets/fonts/helvetica/helvetica-compressed-5871d14b6903a.otf') format('opentype');
   font-display: swap;
 }
 
@@ -81,8 +65,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'Helvetica', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'Helvetica', monospace;
 }
 
 * {
@@ -94,7 +78,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  font-family: 'Helvetica', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   overflow-x: hidden;
 }
 
