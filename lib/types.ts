@@ -73,9 +73,9 @@ export const DEFAULT_NOISE_PARAMS: NoiseParams = {
   halftonePattern: 0,
   halftoneScale: 50.0,
   colorStops: [
-    { position: 0, color: '#5B4E8E' },
-    { position: 0.5, color: '#0A1A3E' },
-    { position: 0.7, color: '#7B9FC4' },
-    { position: 1.0, color: '#B8614D' },
+    { position: 0.25, color: '#5B4E8E' },   // 25% (0 -> 0.25)
+    { position: 0.50, color: '#0A1A3E' },   // 25% (0.25 -> 0.50)
+    { position: 0.75, color: '#7B9FC4' },   // 25% (0.50 -> 0.75)
+    { position: 1.00, color: '#B8614D' },   // 25% (0.75 -> 1.00)
   ],
 };
