@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { DEFAULT_NOISE_PARAMS, NoiseParams, PlayerData } from '@/lib/types';
-import { getPlayerById, getPlayerByIdFromSupabase, testSupabaseConnection } from '@/lib/playerData';
+import { getPlayerById, getPlayerByIdFromSupabase, testSupabaseConnection, getAllPlayersFromSupabase } from '@/lib/playerData';
 import { spacing, typography, colors, interaction } from '@/lib/designTokens';
 import Navigation from '@/components/Navigation';
 
@@ -18,6 +19,8 @@ export default function ExplorePage() {
   const [noiseParams, setNoiseParams] = useState<NoiseParams>(DEFAULT_NOISE_PARAMS);
   const [isLoading, setIsLoading] = useState(true);
   const [showAbout, setShowAbout] = useState(false);
+  const [allPlayers, setAllPlayers] = useState<PlayerData[]>([]);
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0);
 
   useEffect(() => {
     const loadPlayer = async () => {
@@ -25,6 +28,10 @@ export default function ExplorePage() {
 
       // Supabase 연결 테스트
       await testSupabaseConnection();
+
+      // 전체 선수 목록 가져오기
+      const players = await getAllPlayersFromSupabase();
+      setAllPlayers(players);
 
       // localStorage에서 마지막으로 본 player ID 가져오기
       let lastPlayerId = localStorage.getItem('lastViewedPlayer');
@@ -39,6 +46,12 @@ export default function ExplorePage() {
 
       console.log('Loading player with ID:', lastPlayerId);
       setPlayerId(lastPlayerId);
+
+      // 현재 선수의 인덱스 찾기
+      const playerIndex = players.findIndex(p => p.id === lastPlayerId);
+      if (playerIndex !== -1) {
+        setCurrentPlayerIndex(playerIndex);
+      }
 
       // Supabase에서 데이터 가져오기 시도
       const supabasePlayer = await getPlayerByIdFromSupabase(parseInt(lastPlayerId, 10));
@@ -99,6 +112,58 @@ export default function ExplorePage() {
       </div>
     );
   }
+
+  // 이전 선수로 이동
+  const handlePrevPlayer = async () => {
+    if (allPlayers.length === 0) return;
+
+    const newIndex = currentPlayerIndex > 0 ? currentPlayerIndex - 1 : allPlayers.length - 1;
+    const newPlayer = allPlayers[newIndex];
+
+    setCurrentPlayerIndex(newIndex);
+    await loadPlayerById(newPlayer.id);
+  };
+
+  // 다음 선수로 이동
+  const handleNextPlayer = async () => {
+    if (allPlayers.length === 0) return;
+
+    const newIndex = currentPlayerIndex < allPlayers.length - 1 ? currentPlayerIndex + 1 : 0;
+    const newPlayer = allPlayers[newIndex];
+
+    setCurrentPlayerIndex(newIndex);
+    await loadPlayerById(newPlayer.id);
+  };
+
+  // 선수 ID로 선수 데이터 로드
+  const loadPlayerById = async (id: string) => {
+    setIsLoading(true);
+    const supabasePlayer = await getPlayerByIdFromSupabase(parseInt(id, 10));
+
+    if (supabasePlayer) {
+      setPlayer(supabasePlayer);
+      setPlayerId(id);
+      localStorage.setItem('lastViewedPlayer', id);
+
+      // 클럽 색상들로 노이즈 파라미터 생성
+      if (supabasePlayer.clubs.length > 0) {
+        const colorStops = supabasePlayer.clubs.map((club, index) => {
+          const totalClubs = supabasePlayer.clubs.length;
+          return {
+            position: index / (totalClubs - 1 || 1),
+            color: club.colors[0] || '#FFFFFF',
+          };
+        });
+
+        setNoiseParams({
+          ...DEFAULT_NOISE_PARAMS,
+          colorStops,
+        });
+      }
+    }
+
+    setIsLoading(false);
+  };
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-black">
@@ -436,13 +501,24 @@ export default function ExplorePage() {
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `url(${player.image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
             zIndex: 1,
           }}
-        />
+        >
+          <Image
+            src={player.image}
+            alt={player.name}
+            fill
+            priority
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+            }}
+          />
+        </div>
       )}
 
       {/* 3D Uniform with Transparent Background */}
@@ -454,6 +530,100 @@ export default function ExplorePage() {
       >
         <UniformRenderer params={noiseParams} autoRotate transparentBackground />
       </div>
+
+      {/* Left Arrow - Previous Player */}
+      <button
+        onClick={handlePrevPlayer}
+        className="fixed z-50"
+        style={{
+          left: spacing[24],
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: '48px',
+          height: '48px',
+          borderRadius: '50%',
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+        }}
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15 18L9 12L15 6"
+            stroke="white"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
+      {/* Right Arrow - Next Player */}
+      <button
+        onClick={handleNextPlayer}
+        className="fixed z-50"
+        style={{
+          right: spacing[24],
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: '48px',
+          height: '48px',
+          borderRadius: '50%',
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+        }}
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M9 18L15 12L9 6"
+            stroke="white"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
     </div>
   );
 }

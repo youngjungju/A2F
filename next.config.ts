@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
         pathname: '/storage/v1/object/**',
       },
     ],
+    unoptimized: true,
+    minimumCacheTTL: 60,
   },
   async headers() {
     return [
