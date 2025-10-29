@@ -106,7 +106,7 @@ export default function ArchivePage() {
           left: spacing[24],
           display: 'flex',
           flexDirection: 'column',
-          gap: '15px',
+          gap: '10px',
           minWidth: '284px', // Same as Navigation
         }}
       >
