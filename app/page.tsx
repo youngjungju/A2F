@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
+import Webcam from 'react-webcam';
 import NoiseGradientCanvas from '@/components/NoiseGradientCanvas';
 import ControlPanel from '@/components/ControlPanel';
 import { DEFAULT_NOISE_PARAMS, NoiseParams } from '@/lib/types';
@@ -21,6 +22,20 @@ export default function Home() {
   const [params, setParams] = useState<NoiseParams>(DEFAULT_NOISE_PARAMS);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('3d');
   const [showAbout, setShowAbout] = useState(false);
+  const webcamRef = useRef<Webcam>(null);
+
+  const handleWebcamError = useCallback((error: string | DOMException) => {
+    console.error('Webcam error:', error);
+    alert('Unable to access webcam. Please check your camera permissions.');
+  }, []);
+
+  const handleWebcamLoad = useCallback(() => {
+    console.log('Webcam loaded successfully');
+    if (webcamRef.current?.video) {
+      console.log('Webcam video element:', webcamRef.current.video);
+      console.log('Video dimensions:', webcamRef.current.video.videoWidth, 'x', webcamRef.current.video.videoHeight);
+    }
+  }, []);
 
   const handleDownload = () => {
     // Find the canvas element (works for both 2D and 3D)
@@ -50,16 +65,17 @@ export default function Home() {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-black">
+    <div className="relative w-screen h-screen overflow-hidden" style={{ backgroundColor: '#000000' }}>
       {/* Control Panel - Below Navigation */}
       <div
-        className="absolute z-50"
+        className="absolute"
         style={{
           top: 'calc(24px + 40px + 25px)',
           left: spacing[24],
           display: 'flex',
           flexDirection: 'column',
           gap: '8px',
+          zIndex: 100,
         }}
       >
         <ControlPanel
@@ -111,10 +127,11 @@ export default function Home() {
 
       {/* About Button - Top Right (Fixed Position) */}
       <div
-        className="fixed z-50"
+        className="fixed"
         style={{
           top: spacing[24],
           right: spacing[24],
+          zIndex: 100,
         }}
       >
         {/* About Button */}
@@ -162,10 +179,11 @@ export default function Home() {
       {/* About Info Box - Below About Button */}
       {showAbout && (
         <div
-          className="fixed z-50"
+          className="fixed"
           style={{
             top: `calc(${spacing[24]} + 40px + ${spacing[12]})`,
             right: spacing[24],
+            zIndex: 100,
           }}
         >
           <div
@@ -241,10 +259,11 @@ export default function Home() {
 
       {/* Info Box - Bottom Right */}
       <div
-        className="absolute z-50"
+        className="absolute"
         style={{
           bottom: spacing[24],
           right: spacing[24],
+          zIndex: 100,
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
           borderRadius: '24px',
@@ -277,12 +296,74 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Canvas Area */}
-      <div className="w-full h-full">
-        {viewMode === '2d' ? (
-          <NoiseGradientCanvas params={params} />
+      {/* Canvas Area - Base Layer */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 0,
+        }}
+      >
+        {/* Webcam Background - Always show in 3D mode */}
+        {viewMode === '3d' ? (
+          <>
+            {/* Webcam Layer */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 1,
+              }}
+            >
+              <Webcam
+                ref={webcamRef}
+                audio={false}
+                screenshotFormat="image/jpeg"
+                mirrored={true}
+                videoConstraints={{
+                  width: 1920,
+                  height: 1080,
+                  facingMode: 'user',
+                }}
+                onUserMedia={handleWebcamLoad}
+                onUserMediaError={handleWebcamError}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                }}
+              />
+            </div>
+            {/* 3D Uniform on top of webcam */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 2,
+              }}
+            >
+              <UniformRenderer params={params} autoRotate key="uniform-renderer" transparentBackground={true} />
+            </div>
+          </>
         ) : (
-          <UniformRenderer params={params} autoRotate key="uniform-renderer" />
+          /* Normal rendering without webcam */
+          <div style={{ width: '100%', height: '100%' }}>
+            {viewMode === '2d' ? (
+              <NoiseGradientCanvas params={params} />
+            ) : (
+              <UniformRenderer params={params} autoRotate key="uniform-renderer" transparentBackground={false} />
+            )}
+          </div>
         )}
       </div>
     </div>
