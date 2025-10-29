@@ -43,29 +43,45 @@ export default function ScreenSaver() {
       console.log('Playing video');
       const video = videoRef.current;
 
-      // Load the video if not already loaded
-      if (video.readyState < 2) {
+      // Ensure video is ready
+      const attemptPlay = () => {
+        // Force reload and play
         video.load();
-      }
 
-      // Attempt to play
-      const playPromise = video.play();
+        // Small delay to ensure video is loaded
+        setTimeout(() => {
+          const playPromise = video.play();
 
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log('Video playing successfully');
-          })
-          .catch((error) => {
-            console.error('Error playing video:', error);
-            // Try again with user interaction
-            setTimeout(() => {
-              if (isActiveRef.current) {
-                video.play().catch(e => console.error('Retry failed:', e));
-              }
-            }, 100);
-          });
-      }
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                console.log('Video playing successfully');
+              })
+              .catch((error) => {
+                console.error('Error playing video:', error);
+                // Retry multiple times
+                let retries = 0;
+                const retryInterval = setInterval(() => {
+                  if (retries < 5 && isActiveRef.current) {
+                    video.play()
+                      .then(() => {
+                        console.log('Video playing after retry');
+                        clearInterval(retryInterval);
+                      })
+                      .catch(() => {
+                        retries++;
+                        console.log(`Retry attempt ${retries}`);
+                      });
+                  } else {
+                    clearInterval(retryInterval);
+                  }
+                }, 500);
+              });
+          }
+        }, 100);
+      };
+
+      attemptPlay();
     }
   }, [isActive]);
 
