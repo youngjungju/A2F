@@ -5,27 +5,29 @@ import { supabase } from './supabase';
 function convertPlayerRowToPlayerData(row: PlayerRow): PlayerData {
   const clubs: Club[] = [];
 
-  // Team 1-6까지 순회하면서 clubs 배열 생성
-  for (let i = 1; i <= 6; i++) {
-    const teamName = row[`Team ${i}` as keyof PlayerRow] as string | null;
-    const teamColor = row[`Team ${i} Color` as keyof PlayerRow] as string | null;
+  // Teams/0 부터 Teams/8까지 순회하면서 clubs 배열 생성
+  for (let i = 0; i <= 8; i++) {
+    const teamName = row[`Teams/${i}/Team` as keyof PlayerRow] as string | null;
+    const teamColor = row[`Teams/${i}/Color` as keyof PlayerRow] as string | null;
+    const teamPercentage = row[`Teams/${i}/Percentage` as keyof PlayerRow] as string | null;
+    const teamYears = row[`Teams/${i}/Years` as keyof PlayerRow] as number | string | null;
 
-    if (teamName && teamColor) {
-      // 색상과 퍼센티지 파싱
-      // 예: "#F62C8A(21.4%)" -> color: "#F62C8A", percentage: 21.4
-      const colorMatch = teamColor.match(/(#[0-9A-Fa-f]{6})\(([0-9.]+)%\)/);
+    if (teamName && teamColor && teamPercentage) {
+      // Percentage를 숫자로 변환 (문자열로 저장되어 있을 수 있음)
+      const percentage = parseFloat(teamPercentage);
 
-      if (colorMatch) {
-        const color = colorMatch[1];
-        const percentage = parseFloat(colorMatch[2]);
-
-        clubs.push({
-          name: teamName,
-          colors: [color],
-          years: 0, // 년수는 계산하거나 기본값 사용
-          percentage: percentage,
-        });
+      // Years를 숫자로 변환 (bigint 또는 string일 수 있음)
+      let years = 0;
+      if (teamYears !== null) {
+        years = typeof teamYears === 'string' ? parseFloat(teamYears) : Number(teamYears);
       }
+
+      clubs.push({
+        name: teamName,
+        colors: [teamColor],
+        years: years,
+        percentage: percentage,
+      });
     }
   }
 
@@ -92,7 +94,7 @@ export async function testSupabaseConnection(): Promise<void> {
 
   try {
     const { data, error, count } = await supabase
-      .from('Player')
+      .from('Players')
       .select('*', { count: 'exact' })
       .limit(1);
 
@@ -123,7 +125,7 @@ export async function getPlayerByIdFromSupabase(
     console.log('Fetching player with ID:', numericId);
 
     const { data, error } = await supabase
-      .from('Player')
+      .from('Players')
       .select('*')
       .eq('id', numericId)
       .single();
@@ -154,7 +156,7 @@ export async function getPlayerByIdFromSupabase(
 export async function getAllPlayersFromSupabase(): Promise<PlayerData[]> {
   try {
     const { data, error } = await supabase
-      .from('Player')
+      .from('Players')
       .select('*')
       .order('Player Name', { ascending: true });
 

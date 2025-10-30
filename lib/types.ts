@@ -5,24 +5,50 @@ export interface Club {
   percentage: number;
 }
 
-// Supabase Player 테이블 구조
+// Supabase Players 테이블 구조
 export interface PlayerRow {
   id: number;
   'Player Name': string | null;
+  'Total Years': number | null;
+  'Description': string | null;
   'Position': string | null;
   'Image': string | null;
-  'Team 1': string | null;
-  'Team 1 Color': string | null;
-  'Team 2': string | null;
-  'Team 2 Color': string | null;
-  'Team 3': string | null;
-  'Team 3 Color': string | null;
-  'Team 4': string | null;
-  'Team 4 Color': string | null;
-  'Team 5': string | null;
-  'Team 5 Color': string | null;
-  'Team 6': string | null;
-  'Team 6 Color': string | null;
+  'Teams/0/Team': string | null;
+  'Teams/0/Percentage': string | null;
+  'Teams/0/Years': number | null;
+  'Teams/0/Color': string | null;
+  'Teams/1/Team': string | null;
+  'Teams/1/Percentage': string | null;
+  'Teams/1/Years': number | null;
+  'Teams/1/Color': string | null;
+  'Teams/2/Team': string | null;
+  'Teams/2/Percentage': string | null;
+  'Teams/2/Years': number | null;
+  'Teams/2/Color': string | null;
+  'Teams/3/Team': string | null;
+  'Teams/3/Percentage': string | null;
+  'Teams/3/Years': number | null;
+  'Teams/3/Color': string | null;
+  'Teams/4/Team': string | null;
+  'Teams/4/Percentage': string | null;
+  'Teams/4/Years': string | null;
+  'Teams/4/Color': string | null;
+  'Teams/5/Team': string | null;
+  'Teams/5/Percentage': string | null;
+  'Teams/5/Years': string | null;
+  'Teams/5/Color': string | null;
+  'Teams/6/Team': string | null;
+  'Teams/6/Percentage': string | null;
+  'Teams/6/Years': string | null;
+  'Teams/6/Color': string | null;
+  'Teams/7/Team': string | null;
+  'Teams/7/Percentage': string | null;
+  'Teams/7/Years': string | null;
+  'Teams/7/Color': string | null;
+  'Teams/8/Team': string | null;
+  'Teams/8/Percentage': string | null;
+  'Teams/8/Years': string | null;
+  'Teams/8/Color': string | null;
 }
 
 export interface PlayerData {
