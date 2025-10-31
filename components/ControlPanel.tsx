@@ -166,9 +166,10 @@ export default function ControlPanel({
     display: 'flex',
     justifyContent: 'space-between',
     fontSize: '10px',
+    fontFamily: 'Helvetica, Arial, sans-serif',
     marginBottom: '4px',
     color: '#000000',
-    fontWeight: typography.fontWeight.regular,
+    fontWeight: 400,
   };
 
   return (
@@ -192,8 +193,9 @@ export default function ControlPanel({
                 minHeight: '28px',
                 padding: '6px 12px',
                 borderRadius: '6px',
-                fontWeight: typography.fontWeight.semibold,
-                fontSize: '11px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
+                fontSize: '12px',
                 transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
                 backgroundColor: viewMode === '2d' ? '#000000' : 'rgba(0, 0, 0, 0.05)',
                 color: viewMode === '2d' ? '#FFFFFF' : '#000000',
@@ -210,8 +212,9 @@ export default function ControlPanel({
                 minHeight: '28px',
                 padding: '6px 12px',
                 borderRadius: '6px',
-                fontWeight: typography.fontWeight.semibold,
-                fontSize: '11px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
+                fontSize: '12px',
                 transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
                 backgroundColor: viewMode === '3d' ? '#000000' : 'rgba(0, 0, 0, 0.05)',
                 color: viewMode === '3d' ? '#FFFFFF' : '#000000',
@@ -229,15 +232,15 @@ export default function ControlPanel({
       <div style={sectionStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
           <h3 style={{ ...sectionTitleStyle, marginBottom: '0' }}>Color Control</h3>
-          <span style={{ fontSize: '9px', fontWeight: typography.fontWeight.semibold, color: getPortionPercentages().reduce((sum, p) => sum + p, 0) > 100 ? '#FF0000' : '#000000' }}>
+          <span style={{ fontSize: '10px', fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 400, color: getPortionPercentages().reduce((sum, p) => sum + p, 0) > 100 ? '#FF0000' : '#000000' }}>
             Total: {getPortionPercentages().reduce((sum, p) => sum + p, 0).toFixed(0)}%
           </span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {/* Header Row */}
           <div style={{ display: 'grid', gridTemplateColumns: '45px 1fr 35px 20px', gap: '4px', paddingBottom: '4px', borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }}>
-            <span style={{ fontSize: '9px', fontWeight: typography.fontWeight.semibold, color: '#000000' }}>Portion</span>
-            <span style={{ fontSize: '9px', fontWeight: typography.fontWeight.semibold, color: '#000000' }}>Color Code</span>
+            <span style={{ fontSize: '10px', fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 400, color: '#000000' }}>Portion</span>
+            <span style={{ fontSize: '10px', fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 400, color: '#000000' }}>Color Code</span>
             <span></span>
             <span></span>
           </div>
@@ -281,14 +284,15 @@ export default function ControlPanel({
                   }}
                   style={{
                     width: '100%',
-                    fontSize: '9px',
+                    fontSize: '10px',
+                    fontFamily: 'Helvetica, Arial, sans-serif',
                     color: '#000000',
                     backgroundColor: 'rgba(0, 0, 0, 0.05)',
                     border: '1px solid rgba(0, 0, 0, 0.1)',
                     borderRadius: '3px',
                     padding: '2px 4px',
                     textAlign: 'center',
-                    fontWeight: typography.fontWeight.regular,
+                    fontWeight: 400,
                   }}
                 />
               <input
