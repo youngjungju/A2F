@@ -224,7 +224,9 @@ export default function Home() {
             {/* Description */}
             <p
               style={{
-                fontSize: typography.fontSize.footnote,
+                fontSize: '10px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
                 color: 'rgba(0, 0, 0, 0.7)',
                 lineHeight: typography.lineHeight.relaxed,
                 marginBottom: spacing[20],
@@ -239,18 +241,20 @@ export default function Home() {
                 display: 'flex',
                 flexDirection: 'column',
                 gap: spacing[8],
-                fontSize: typography.fontSize.footnote,
+                fontSize: '10px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
                 color: 'rgba(0, 0, 0, 0.7)',
               }}
             >
               <div style={{ display: 'flex', gap: spacing[16] }}>
-                <span style={{ minWidth: '70px', fontWeight: typography.fontWeight.medium }}>
+                <span style={{ minWidth: '70px', fontWeight: 400 }}>
                   Email
                 </span>
                 <span>johnwkim82@gmail.com</span>
               </div>
               <div style={{ display: 'flex', gap: spacing[16] }}>
-                <span style={{ minWidth: '70px', fontWeight: typography.fontWeight.medium }}>
+                <span style={{ minWidth: '70px', fontWeight: 400 }}>
                   Instagram
                 </span>
                 <span>joelkim.82</span>
@@ -289,7 +293,9 @@ export default function Home() {
         </h2>
         <p
           style={{
-            fontSize: typography.fontSize.footnote,
+            fontSize: '10px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+            fontWeight: 400,
             color: 'rgba(0, 0, 0, 0.7)',
             lineHeight: typography.lineHeight.relaxed,
           }}

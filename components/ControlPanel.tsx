@@ -303,15 +303,15 @@ export default function ControlPanel({
                 maxLength={7}
                 style={{
                   width: '100%',
-                  fontSize: '9px',
+                  fontSize: '10px',
+                  fontFamily: 'Helvetica, Arial, sans-serif',
                   color: '#000000',
                   backgroundColor: 'rgba(0, 0, 0, 0.05)',
                   border: '1px solid rgba(0, 0, 0, 0.1)',
                   borderRadius: '3px',
                   padding: '2px 4px',
                   textAlign: 'center',
-                  fontWeight: typography.fontWeight.regular,
-                  fontFamily: 'monospace',
+                  fontWeight: 400,
                 }}
               />
               <input
@@ -355,8 +355,9 @@ export default function ControlPanel({
                 backgroundColor: 'rgba(0, 0, 0, 0.05)',
                 border: '1px solid rgba(0, 0, 0, 0.1)',
                 borderRadius: '3px',
-                fontSize: '9px',
-                fontWeight: typography.fontWeight.semibold,
+                fontSize: '10px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
                 color: '#000000',
                 cursor: 'pointer',
                 transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
