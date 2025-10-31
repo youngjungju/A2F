@@ -155,8 +155,9 @@ export default function ControlPanel({
   };
 
   const sectionTitleStyle = {
-    fontSize: '12px',
-    fontWeight: typography.fontWeight.semibold,
+    fontSize: '14px',
+    fontFamily: 'Helvetica, Arial, sans-serif',
+    fontWeight: 400,
     marginBottom: '8px',
     color: '#000000',
   };

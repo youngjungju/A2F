@@ -92,8 +92,9 @@ export default function Home() {
             backgroundColor: '#000000',
             borderRadius: '6px',
             color: colors.dark.label.primary,
-            fontSize: '11px',
-            fontWeight: typography.fontWeight.semibold,
+            fontSize: '14px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+            fontWeight: 400,
             border: 'none',
             transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
             cursor: 'pointer',
@@ -112,8 +113,9 @@ export default function Home() {
             backgroundColor: '#000000',
             borderRadius: '6px',
             color: colors.dark.label.primary,
-            fontSize: '11px',
-            fontWeight: typography.fontWeight.semibold,
+            fontSize: '14px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+            fontWeight: 400,
             border: 'none',
             transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
             cursor: 'pointer',
@@ -276,8 +278,9 @@ export default function Home() {
       >
         <h2
           style={{
-            fontSize: typography.fontSize.headline,
-            fontWeight: typography.fontWeight.bold,
+            fontSize: '14px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+            fontWeight: 400,
             color: 'rgba(0, 0, 0, 0.9)',
             marginBottom: spacing[8],
           }}
