@@ -20,7 +20,7 @@ const UniformRenderer = dynamic(() => import('@/components/UniformRenderer'), {
 
 export default function Home() {
   const [params, setParams] = useState<NoiseParams>(DEFAULT_NOISE_PARAMS);
-  const [viewMode, setViewMode] = useState<'2d' | '3d'>('3d');
+  const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
   const [showAbout, setShowAbout] = useState(false);
   const webcamRef = useRef<Webcam>(null);
 
