@@ -90,12 +90,12 @@ export interface NoiseParams {
 }
 
 export const DEFAULT_NOISE_PARAMS: NoiseParams = {
-  amplitude: 0.5,
+  amplitude: 2.0,
   saturation: 1.0,
   layers: 4,
-  lacunarity: 2.0,
-  gain: 0.5,
-  warpStrength: 0.3,
+  lacunarity: 2.3,
+  gain: 0.65,
+  warpStrength: 1.0,
   halftonePattern: 0,
   halftoneScale: 50.0,
   colorStops: [
