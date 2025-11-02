@@ -198,7 +198,7 @@ export default function ArchivePage() {
                 }}
               >
                 <Image
-                  src={player.image || '/assets/images/lee.png'}
+                  src={player.image || '/assets/images/a2f.png'}
                   alt={player.name}
                   fill
                   style={{
@@ -206,7 +206,7 @@ export default function ArchivePage() {
                   }}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = '/assets/images/lee.png';
+                    target.src = '/assets/images/a2f.png';
                   }}
                 />
               </div>
