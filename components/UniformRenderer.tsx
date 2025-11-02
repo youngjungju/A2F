@@ -182,7 +182,7 @@ export default function UniformRenderer({
   return (
     <div className={`w-full h-full ${className}`}>
       <Canvas
-        camera={{ position: [0, 0, 2.5], fov: 45 }}
+        camera={{ position: [0, 0, 1.5], fov: 45 }}
         shadows
         gl={{
           antialias: true,
@@ -247,7 +247,7 @@ export default function UniformRenderer({
         <OrbitControls
           enableDamping
           dampingFactor={0.08}
-          minDistance={1.5}
+          minDistance={0.8}
           maxDistance={6}
           maxPolarAngle={Math.PI / 2 + 0.3}
           target={[0, 0, 0]}
