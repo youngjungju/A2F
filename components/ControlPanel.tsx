@@ -4,6 +4,52 @@ import React from 'react';
 import { NoiseParams, ColorStop } from '@/lib/types';
 import { spacing, typography, colors, interaction, shadows } from '@/lib/designTokens';
 
+// Custom slider styles
+const sliderStyles = `
+  .custom-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #C1C1C1;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12.04px;
+    height: 12.04px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at center, white 0%, white 3px, transparent 3px, transparent 4px),
+      #797979;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .custom-slider::-moz-range-thumb {
+    width: 12.04px;
+    height: 12.04px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at center, white 0%, white 3px, transparent 3px, transparent 4px),
+      #797979;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .custom-slider::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #C1C1C1;
+  }
+`;
+
 interface ControlPanelProps {
   params: NoiseParams;
   onParamsChange: (params: NoiseParams) => void;
@@ -167,20 +213,22 @@ export default function ControlPanel({
     justifyContent: 'space-between',
     fontSize: '10px',
     fontFamily: 'Helvetica, Arial, sans-serif',
-    marginBottom: '4px',
+    marginBottom: '2px',
     color: '#000000',
     fontWeight: 400,
   };
 
   return (
-    <div
-      className={className}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
-      }}
-    >
+    <>
+      <style>{sliderStyles}</style>
+      <div
+        className={className}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+        }}
+      >
       {/* View Mode Section */}
       {onViewModeChange && (
         <div style={sectionStyle}>
@@ -236,9 +284,20 @@ export default function ControlPanel({
             Total: {getPortionPercentages().reduce((sum, p) => sum + p, 0).toFixed(0)}%
           </span>
         </div>
+
+        {/* Divider after Color Control title */}
+        <div
+          style={{
+            width: '100%',
+            height: '1px',
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            marginBottom: '8px',
+          }}
+        />
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {/* Header Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: '45px 1fr 35px 20px', gap: '4px', paddingBottom: '4px', borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '45px 1fr 35px 20px', gap: '4px', paddingBottom: '4px' }}>
             <span style={{ fontSize: '10px', fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 400, color: '#000000' }}>Portion</span>
             <span style={{ fontSize: '10px', fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 400, color: '#000000' }}>Color Code</span>
             <span></span>
@@ -378,6 +437,17 @@ export default function ControlPanel({
       {/* Heatmap Control Section */}
       <div style={sectionStyle}>
         <h3 style={sectionTitleStyle}>Heatmap Control</h3>
+
+        {/* Divider after Heatmap Control title */}
+        <div
+          style={{
+            width: '100%',
+            height: '1px',
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            marginBottom: '8px',
+          }}
+        />
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {/* Saturation */}
           <div>
@@ -392,13 +462,7 @@ export default function ControlPanel({
               step="0.01"
               value={params.saturation}
               onChange={(e) => updateParam('saturation', parseFloat(e.target.value))}
-              style={{
-                width: '100%',
-                height: '3px',
-                borderRadius: '3px',
-                cursor: 'pointer',
-                accentColor: '#000000',
-              }}
+              className="custom-slider"
             />
           </div>
 
@@ -415,13 +479,7 @@ export default function ControlPanel({
               step="0.01"
               value={params.amplitude}
               onChange={(e) => updateParam('amplitude', parseFloat(e.target.value))}
-              style={{
-                width: '100%',
-                height: '3px',
-                borderRadius: '3px',
-                cursor: 'pointer',
-                accentColor: '#000000',
-              }}
+              className="custom-slider"
             />
           </div>
 
@@ -438,13 +496,7 @@ export default function ControlPanel({
               step="0.1"
               value={params.lacunarity}
               onChange={(e) => updateParam('lacunarity', parseFloat(e.target.value))}
-              style={{
-                width: '100%',
-                height: '3px',
-                borderRadius: '3px',
-                cursor: 'pointer',
-                accentColor: '#000000',
-              }}
+              className="custom-slider"
             />
           </div>
 
@@ -461,13 +513,7 @@ export default function ControlPanel({
               step="0.05"
               value={params.gain}
               onChange={(e) => updateParam('gain', parseFloat(e.target.value))}
-              style={{
-                width: '100%',
-                height: '3px',
-                borderRadius: '3px',
-                cursor: 'pointer',
-                accentColor: '#000000',
-              }}
+              className="custom-slider"
             />
           </div>
 
@@ -484,17 +530,12 @@ export default function ControlPanel({
               step="0.05"
               value={params.warpStrength}
               onChange={(e) => updateParam('warpStrength', parseFloat(e.target.value))}
-              style={{
-                width: '100%',
-                height: '3px',
-                borderRadius: '3px',
-                cursor: 'pointer',
-                accentColor: '#000000',
-              }}
+              className="custom-slider"
             />
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 }
