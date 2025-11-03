@@ -19,6 +19,8 @@ export const spacing = {
   16: '1.6rem',   // 25.6px
   20: '2rem',     // 32px
   24: '2.4rem',   // 38.4px
+  25: '1.25rem',  // 20px - custom for horizontal page margins
+  28: '1.5625rem',// 25px - custom for vertical page margins
   32: '3.2rem',   // 51.2px
   40: '4rem',     // 64px
   48: '4.8rem',   // 76.8px

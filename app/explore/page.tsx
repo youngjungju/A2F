@@ -174,8 +174,8 @@ export default function ExplorePage() {
       <div
         className="fixed z-50"
         style={{
-          top: spacing[24],
-          right: spacing[24],
+          top: spacing[28],
+          right: spacing[25],
         }}
       >
         {/* About Button */}
@@ -185,7 +185,6 @@ export default function ExplorePage() {
             backdropFilter: 'blur(20px)',
             borderRadius: '8px',
             padding: '4px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
           }}
         >
           <button
@@ -195,8 +194,9 @@ export default function ExplorePage() {
               backgroundColor: showAbout ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
               borderRadius: '6px',
               color: colors.dark.label.primary,
-              fontSize: '11px',
-              fontWeight: typography.fontWeight.semibold,
+              fontSize: '16px',
+              fontFamily: 'Helvetica, Arial, sans-serif',
+              fontWeight: 400,
               border: 'none',
               transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
               cursor: 'pointer',
@@ -225,8 +225,8 @@ export default function ExplorePage() {
         <div
           className="fixed z-50"
           style={{
-            top: `calc(${spacing[24]} + 40px + ${spacing[12]})`,
-            right: spacing[24],
+            top: `calc(${spacing[25]} + 40px + ${spacing[12]})`,
+            right: spacing[25],
           }}
         >
           <div
@@ -304,8 +304,8 @@ export default function ExplorePage() {
       <div
         className="fixed z-50"
         style={{
-          top: `calc(${spacing[24]} + 40px + ${spacing[12]})`,
-          left: spacing[24],
+          top: `calc(${spacing[25]} + 40px + ${spacing[12]})`,
+          left: spacing[25],
           width: '284px',
         }}
       >
@@ -357,8 +357,8 @@ export default function ExplorePage() {
       <div
         className="fixed z-50"
         style={{
-          top: `calc(${spacing[24]} + 40px + ${spacing[12]} + 90px)`,
-          left: spacing[24],
+          top: `calc(${spacing[25]} + 40px + ${spacing[12]} + 90px)`,
+          left: spacing[25],
           width: '284px',
         }}
       >
@@ -471,8 +471,8 @@ export default function ExplorePage() {
       <div
         className="fixed z-50"
         style={{
-          bottom: spacing[24],
-          right: spacing[24],
+          bottom: spacing[28],
+          right: spacing[25],
           minWidth: '283px',
         }}
       >
@@ -547,7 +547,7 @@ export default function ExplorePage() {
         onClick={handlePrevPlayer}
         className="fixed z-50"
         style={{
-          left: spacing[24],
+          left: spacing[25],
           top: '50%',
           transform: 'translateY(-50%)',
           width: '48px',
@@ -594,7 +594,7 @@ export default function ExplorePage() {
         onClick={handleNextPlayer}
         className="fixed z-50"
         style={{
-          right: spacing[24],
+          right: spacing[25],
           top: '50%',
           transform: 'translateY(-50%)',
           width: '48px',

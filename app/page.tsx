@@ -71,7 +71,7 @@ export default function Home() {
         className="absolute"
         style={{
           top: 'calc(24px + 40px + 25px)',
-          left: spacing[24],
+          left: spacing[25],
           display: 'flex',
           flexDirection: 'column',
           gap: '8px',
@@ -131,8 +131,8 @@ export default function Home() {
       <div
         className="fixed"
         style={{
-          top: spacing[24],
-          right: spacing[24],
+          top: spacing[28],
+          right: spacing[25],
           zIndex: 100,
         }}
       >
@@ -143,7 +143,6 @@ export default function Home() {
             backdropFilter: 'blur(20px)',
             borderRadius: '8px',
             padding: '4px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
           }}
         >
           <button
@@ -184,8 +183,8 @@ export default function Home() {
         <div
           className="fixed"
           style={{
-            top: `calc(${spacing[24]} + 40px + ${spacing[12]})`,
-            right: spacing[24],
+            top: `calc(${spacing[25]} + 40px + ${spacing[12]})`,
+            right: spacing[25],
             zIndex: 100,
           }}
         >
@@ -268,8 +267,8 @@ export default function Home() {
       <div
         className="absolute"
         style={{
-          bottom: spacing[24],
-          right: spacing[24],
+          bottom: spacing[28],
+          right: spacing[25],
           zIndex: 100,
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',

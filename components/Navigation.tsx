@@ -17,8 +17,8 @@ export default function Navigation() {
     <div
       className="fixed z-50"
       style={{
-        top: spacing[24],
-        left: spacing[24],
+        top: spacing[28],
+        left: spacing[25],
         display: 'flex',
         flexDirection: 'row',
         backgroundColor: 'rgba(28, 28, 30, 0.95)',
@@ -27,7 +27,6 @@ export default function Navigation() {
         padding: '4px',
         gap: '4px',
         minWidth: '284px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
       }}
     >
       {navItems.map((item) => {
