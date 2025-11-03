@@ -411,7 +411,7 @@ export default function ControlPanel({
             <input
               type="range"
               min="0"
-              max="2"
+              max="4"
               step="0.01"
               value={params.amplitude}
               onChange={(e) => updateParam('amplitude', parseFloat(e.target.value))}
@@ -433,8 +433,8 @@ export default function ControlPanel({
             </label>
             <input
               type="range"
-              min="1"
-              max="4"
+              min="0.7"
+              max="3.9"
               step="0.1"
               value={params.lacunarity}
               onChange={(e) => updateParam('lacunarity', parseFloat(e.target.value))}
@@ -456,8 +456,8 @@ export default function ControlPanel({
             </label>
             <input
               type="range"
-              min="0.1"
-              max="0.9"
+              min="0.35"
+              max="0.95"
               step="0.05"
               value={params.gain}
               onChange={(e) => updateParam('gain', parseFloat(e.target.value))}
@@ -480,7 +480,7 @@ export default function ControlPanel({
             <input
               type="range"
               min="0"
-              max="1"
+              max="2"
               step="0.05"
               value={params.warpStrength}
               onChange={(e) => updateParam('warpStrength', parseFloat(e.target.value))}
