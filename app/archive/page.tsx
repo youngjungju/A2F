@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { PlayerData } from '@/lib/types';
 import { getAllPlayersFromSupabase } from '@/lib/playerData';
 import { matchesSearch } from '@/lib/koreanNameMapping';
@@ -16,6 +17,7 @@ export default function ArchivePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPosition, setSelectedPosition] = useState('All Position');
+  const [loadingOpacity, setLoadingOpacity] = useState(1);
 
   useEffect(() => {
     const loadPlayers = async () => {
@@ -23,7 +25,14 @@ export default function ArchivePage() {
       const data = await getAllPlayersFromSupabase();
       setPlayers(data);
       setFilteredPlayers(data);
-      setIsLoading(false);
+
+      // Start fade-out animation
+      setLoadingOpacity(0);
+
+      // Wait for fade-out to complete before hiding loading screen
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
     };
 
     loadPlayers();
@@ -90,10 +99,23 @@ export default function ArchivePage() {
 
   if (isLoading) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4 text-black">Loading Players...</h1>
-        </div>
+      <div
+        className="w-screen h-screen relative bg-white"
+        style={{
+          opacity: loadingOpacity,
+          transition: 'opacity 500ms ease-out',
+        }}
+      >
+        <Image
+          src="https://njdeanhnuzthyptzsjtw.supabase.co/storage/v1/object/sign/video/loading.gif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jM2Q0ZjM3MS05YThjLTQ3NGMtOGM2MS0xNzAxNWZiYTAyZjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlby9sb2FkaW5nLmdpZiIsImlhdCI6MTc2MjIwNTAwNSwiZXhwIjo4NjU3NjIxMTg2MDV9.46J-YwzTc0ZCsE0diy2eGPYGyNvgn41rCy3VMhqkDIQ"
+          alt="Loading"
+          fill
+          style={{
+            objectFit: 'cover',
+          }}
+          unoptimized
+          priority
+        />
       </div>
     );
   }
