@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { PlayerData } from '@/lib/types';
 import { getAllPlayersFromSupabase } from '@/lib/playerData';
+import { matchesSearch } from '@/lib/koreanNameMapping';
 import { spacing, typography } from '@/lib/designTokens';
 import AboutButton from '@/components/AboutButton';
 import PlayerCard from '@/components/PlayerCard';
@@ -31,12 +32,10 @@ export default function ArchivePage() {
   useEffect(() => {
     let filtered = players;
 
-    // Filter by search query
+    // Filter by search query (양방향 음역 지원)
     if (searchQuery) {
-      filtered = filtered.filter(
-        (player) =>
-          player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          player.nameKo.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter((player) =>
+        matchesSearch(player.name, player.nameKo, searchQuery)
       );
     }
 

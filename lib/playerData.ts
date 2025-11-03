@@ -1,5 +1,6 @@
 import { PlayerData, Archive, PlayerRow, Club } from './types';
 import { supabase } from './supabase';
+import { getKoreanName } from './koreanNameMapping';
 
 // Supabase PlayerRow를 PlayerData로 변환하는 함수
 function convertPlayerRowToPlayerData(row: PlayerRow): PlayerData {
@@ -31,10 +32,12 @@ function convertPlayerRowToPlayerData(row: PlayerRow): PlayerData {
     }
   }
 
+  const playerName = row['Player Name'] || 'Unknown Player';
+
   return {
     id: row.id.toString(),
-    name: row['Player Name'] || 'Unknown Player',
-    nameKo: row['Player Name'] || 'Unknown Player',
+    name: playerName,
+    nameKo: getKoreanName(playerName),
     clubs: clubs,
     careerTimeline: [], // 필요시 계산
     position: row['Position'] || undefined,
