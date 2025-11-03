@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { spacing, typography, colors, interaction } from '@/lib/designTokens';
+import { spacing, colors, interaction } from '@/lib/designTokens';
 
 export default function Navigation() {
   const pathname = usePathname();

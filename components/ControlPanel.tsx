@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { NoiseParams, ColorStop } from '@/lib/types';
-import { spacing, typography, colors, interaction, shadows } from '@/lib/designTokens';
+import { NoiseParams } from '@/lib/types';
+import { spacing, typography, interaction } from '@/lib/designTokens';
 
 // Custom slider styles
 const sliderStyles = `
