@@ -72,6 +72,7 @@ export const noiseFragmentShader = `
   vec3 getColorFromScheme(float t) {
     t = clamp(t, 0.0, 1.0);
 
+    // Find which color segment we're in
     for(int i = 0; i < 9; i++) {
       if(i >= u_colorStopCount - 1) break;
 
@@ -79,9 +80,16 @@ export const noiseFragmentShader = `
       float pos2 = u_colorPositions[i + 1];
 
       if(t >= pos1 && t <= pos2) {
-        float blend = (t - pos1) / (pos2 - pos1);
+        float blend = smoothstep(pos1, pos2, t);
         return mix(u_colorValues[i], u_colorValues[i + 1], blend);
       }
+    }
+
+    // If we're at or past the last position, blend back to first color for smooth cycling
+    float lastPos = u_colorPositions[u_colorStopCount - 1];
+    if(t >= lastPos && u_colorStopCount > 1) {
+      float blend = smoothstep(lastPos, 1.0, t);
+      return mix(u_colorValues[u_colorStopCount - 1], u_colorValues[0], blend * 0.3);
     }
 
     return u_colorValues[u_colorStopCount - 1];
