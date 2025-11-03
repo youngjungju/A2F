@@ -49,6 +49,12 @@ export interface PlayerRow {
   'Teams/8/Percentage': string | null;
   'Teams/8/Years': string | null;
   'Teams/8/Color': string | null;
+  // Heatmap Control parameters
+  'Saturation': number | null;
+  'Amplitude': number | null;
+  'Lacunarity': number | null;
+  'Grain': number | null;
+  'Warp Strength': number | null;
 }
 
 export interface PlayerData {
@@ -60,6 +66,13 @@ export interface PlayerData {
   position?: string;
   birthYear?: number;
   image?: string;
+  description?: string;
+  // Heatmap Control parameters (for custom uniforms)
+  saturation?: number | null;
+  amplitude?: number | null;
+  lacunarity?: number | null;
+  grain?: number | null;
+  warpStrength?: number | null;
 }
 
 export interface Archive {

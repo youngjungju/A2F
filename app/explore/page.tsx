@@ -70,10 +70,32 @@ export default function ExplorePage() {
             };
           });
 
-          setNoiseParams({
-            ...DEFAULT_NOISE_PARAMS,
-            colorStops,
-          });
+          // Check if custom Heatmap Control values exist in the database
+          const hasCustomHeatmapValues =
+            supabasePlayer.saturation !== null ||
+            supabasePlayer.amplitude !== null ||
+            supabasePlayer.lacunarity !== null ||
+            supabasePlayer.grain !== null ||
+            supabasePlayer.warpStrength !== null;
+
+          if (hasCustomHeatmapValues) {
+            // Use saved Heatmap Control values
+            setNoiseParams({
+              ...DEFAULT_NOISE_PARAMS,
+              colorStops,
+              saturation: supabasePlayer.saturation ?? DEFAULT_NOISE_PARAMS.saturation,
+              amplitude: supabasePlayer.amplitude ?? DEFAULT_NOISE_PARAMS.amplitude,
+              lacunarity: supabasePlayer.lacunarity ?? DEFAULT_NOISE_PARAMS.lacunarity,
+              gain: supabasePlayer.grain ?? DEFAULT_NOISE_PARAMS.gain,
+              warpStrength: supabasePlayer.warpStrength ?? DEFAULT_NOISE_PARAMS.warpStrength,
+            });
+          } else {
+            // Use default Explore settings
+            setNoiseParams({
+              ...DEFAULT_NOISE_PARAMS,
+              colorStops,
+            });
+          }
         }
       } else {
         // Fallback to local data
@@ -225,7 +247,7 @@ export default function ExplorePage() {
               fontWeight: typography.fontWeight.regular,
             }}
           >
-            {player.clubs.map(club => club.name).join(', ')} 등 총 {player.clubs.length}개 팀에서 {player.clubs.reduce((sum, club) => sum + (club.years || 0), 0)}년간 활동했습니다.
+            {player.description || `${player.clubs.map(club => club.name).join(', ')} 등 총 ${player.clubs.length}개 팀에서 ${player.clubs.reduce((sum, club) => sum + (club.years || 0), 0)}년간 활동했습니다.`}
           </p>
         </div>
 

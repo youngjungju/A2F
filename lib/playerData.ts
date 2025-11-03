@@ -40,6 +40,13 @@ function convertPlayerRowToPlayerData(row: PlayerRow): PlayerData {
     position: row['Position'] || undefined,
     birthYear: undefined,
     image: row['Image'] || undefined,
+    description: row['Description'] || undefined,
+    // Heatmap Control parameters (for custom uniforms)
+    saturation: row['Saturation'],
+    amplitude: row['Amplitude'],
+    lacunarity: row['Lacunarity'],
+    grain: row['Grain'],
+    warpStrength: row['Warp Strength'],
   };
 }
 

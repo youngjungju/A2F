@@ -68,22 +68,26 @@ export default function ArchivePage() {
 
   // Sort positions by category: 공격 -> 미드필더 -> 수비 -> 골키퍼
   const positionOrder = ['FW', 'ST', 'CF', 'LW', 'RW', 'SS', 'AM', 'CAM', 'MF', 'CM', 'DM', 'CDM', 'LM', 'RM', 'DF', 'CB', 'LB', 'RB', 'WB', 'GK'];
-  const sortedPositions = uniquePositions.sort((a, b) => {
-    const indexA = positionOrder.indexOf(a);
-    const indexB = positionOrder.indexOf(b);
+  const sortedPositions = uniquePositions
+    .filter(pos => pos !== 'Custom') // Exclude 'Custom' from sorting
+    .sort((a, b) => {
+      const indexA = positionOrder.indexOf(a);
+      const indexB = positionOrder.indexOf(b);
 
-    // If both positions are in the order list, sort by their index
-    if (indexA !== -1 && indexB !== -1) {
-      return indexA - indexB;
-    }
-    // If only one is in the list, prioritize it
-    if (indexA !== -1) return -1;
-    if (indexB !== -1) return 1;
-    // Otherwise, sort alphabetically
-    return a.localeCompare(b);
-  });
+      // If both positions are in the order list, sort by their index
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+      // If only one is in the list, prioritize it
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      // Otherwise, sort alphabetically
+      return a.localeCompare(b);
+    });
 
-  const positions = ['All Position', ...sortedPositions];
+  // Add 'Custom' at the end if it exists in the data
+  const hasCustom = uniquePositions.includes('Custom');
+  const positions = ['All Position', ...sortedPositions, ...(hasCustom ? ['Custom'] : [])];
 
   if (isLoading) {
     return (
