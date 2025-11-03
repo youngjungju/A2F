@@ -300,15 +300,19 @@ export default function ExplorePage() {
         </div>
       )}
 
-      {/* Player Info Box - Below Navigation */}
+      {/* Player Info and Career Timeline Container */}
       <div
         className="fixed z-50"
         style={{
           top: 'calc(25px + 40px + 15px)',
           left: spacing[25],
           width: '284px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
         }}
       >
+        {/* Player Info Box */}
         <div
           style={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -351,17 +355,8 @@ export default function ExplorePage() {
             {player.clubs.map(club => club.name).join(', ')} 등 총 {player.clubs.length}개 팀에서 {player.clubs.reduce((sum, club) => sum + (club.years || 0), 0)}년간 활동했습니다.
           </p>
         </div>
-      </div>
 
-      {/* Career Timeline Box - Below Player Info */}
-      <div
-        className="fixed z-50"
-        style={{
-          top: 'calc(25px + 40px + 15px + 90px)',
-          left: spacing[25],
-          width: '284px',
-        }}
-      >
+        {/* Career Timeline Box */}
         <div
           style={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',

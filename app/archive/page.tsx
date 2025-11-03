@@ -68,7 +68,7 @@ export default function ArchivePage() {
   ));
 
   // Sort positions by category: 공격 -> 미드필더 -> 수비 -> 골키퍼
-  const positionOrder = ['FW', 'ST', 'CF', 'LW', 'RW', 'SS', 'AM', 'MF', 'CM', 'DM', 'LM', 'RM', 'DF', 'CB', 'LB', 'RB', 'WB', 'GK'];
+  const positionOrder = ['FW', 'ST', 'CF', 'LW', 'RW', 'SS', 'AM', 'CAM', 'MF', 'CM', 'DM', 'CDM', 'LM', 'RM', 'DF', 'CB', 'LB', 'RB', 'WB', 'GK'];
   const sortedPositions = uniquePositions.sort((a, b) => {
     const indexA = positionOrder.indexOf(a);
     const indexB = positionOrder.indexOf(b);
@@ -118,7 +118,8 @@ export default function ArchivePage() {
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
             width: '100%',
-            padding: `${spacing[12]} ${spacing[16]}`,
+            height: '47.49px',
+            padding: `0 ${spacing[16]}`,
             backgroundColor: '#E5E5E5',
             border: 'none',
             borderRadius: '8px',
@@ -134,7 +135,8 @@ export default function ArchivePage() {
           onChange={(e) => setSelectedPosition(e.target.value)}
           style={{
             width: '100%',
-            padding: `${spacing[12]} ${spacing[16]}`,
+            height: '47.49px',
+            padding: `0 ${spacing[16]}`,
             backgroundColor: '#E5E5E5',
             border: 'none',
             borderRadius: '8px',
@@ -183,14 +185,14 @@ export default function ArchivePage() {
               onClick={() => handlePlayerClick(player)}
               className="cursor-pointer transition-all hover:opacity-80"
               style={{
-                minWidth: '210.96px', // 80% of 263.7px
+                width: '263.7px',
               }}
             >
               {/* Player Image */}
               <div
                 style={{
                   width: '100%',
-                  height: '295.34px', // 80% of 369.18px
+                  height: '369.18px',
                   borderRadius: '12px',
                   overflow: 'hidden',
                   marginBottom: spacing[12],
