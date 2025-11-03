@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 
-const IDLE_TIMEOUT = 60000; // 1 minute (60 seconds)
+const IDLE_TIMEOUT = 3600000; // 1 hour (3600 seconds)
 
 export default function ScreenSaver() {
   const [isActive, setIsActive] = useState(false);
