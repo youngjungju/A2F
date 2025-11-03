@@ -225,7 +225,7 @@ export default function ExplorePage() {
         <div
           className="fixed z-50"
           style={{
-            top: `calc(${spacing[25]} + 40px + ${spacing[12]})`,
+            top: 'calc(25px + 40px + 15px)',
             right: spacing[25],
           }}
         >
@@ -278,18 +278,18 @@ export default function ExplorePage() {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: spacing[8],
+                gap: '10px',
                 fontSize: typography.fontSize.footnote,
                 color: 'rgba(0, 0, 0, 0.7)',
               }}
             >
-              <div style={{ display: 'flex', gap: spacing[16] }}>
+              <div style={{ display: 'flex', gap: '10px' }}>
                 <span style={{ minWidth: '70px', fontWeight: typography.fontWeight.medium }}>
                   Email
                 </span>
                 <span>johnwkim82@gmail.com</span>
               </div>
-              <div style={{ display: 'flex', gap: spacing[16] }}>
+              <div style={{ display: 'flex', gap: '10px' }}>
                 <span style={{ minWidth: '70px', fontWeight: typography.fontWeight.medium }}>
                   Instagram
                 </span>
@@ -304,7 +304,7 @@ export default function ExplorePage() {
       <div
         className="fixed z-50"
         style={{
-          top: `calc(${spacing[25]} + 40px + ${spacing[12]})`,
+          top: 'calc(25px + 40px + 15px)',
           left: spacing[25],
           width: '284px',
         }}
@@ -357,7 +357,7 @@ export default function ExplorePage() {
       <div
         className="fixed z-50"
         style={{
-          top: `calc(${spacing[25]} + 40px + ${spacing[12]} + 90px)`,
+          top: 'calc(25px + 40px + 15px + 90px)',
           left: spacing[25],
           width: '284px',
         }}
@@ -398,7 +398,7 @@ export default function ExplorePage() {
             style={{
               display: 'grid',
               gridTemplateColumns: '50px 1fr 60px',
-              gap: '8px',
+              gap: '9.95px',
               marginBottom: '6px',
             }}
           >
@@ -424,14 +424,14 @@ export default function ExplorePage() {
           </div>
 
           {/* Career Bars */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '9.95px' }}>
             {player.clubs.map((club, index) => (
               <div
                 key={index}
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '50px 1fr 60px',
-                  gap: '8px',
+                  gap: '9.95px',
                   alignItems: 'center',
                 }}
               >

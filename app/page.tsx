@@ -70,11 +70,11 @@ export default function Home() {
       <div
         className="absolute"
         style={{
-          top: 'calc(24px + 40px + 25px)',
+          top: 'calc(25px + 40px + 15px)',
           left: spacing[25],
           display: 'flex',
           flexDirection: 'column',
-          gap: '8px',
+          gap: '10px',
           zIndex: 100,
         }}
       >
@@ -239,20 +239,20 @@ export default function Home() {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: spacing[8],
+                gap: '10px',
                 fontSize: '10px',
                 fontFamily: 'Helvetica, Arial, sans-serif',
                 fontWeight: 400,
                 color: 'rgba(0, 0, 0, 0.7)',
               }}
             >
-              <div style={{ display: 'flex', gap: spacing[16] }}>
+              <div style={{ display: 'flex', gap: '10px' }}>
                 <span style={{ minWidth: '70px', fontWeight: 400 }}>
                   Email
                 </span>
                 <span>johnwkim82@gmail.com</span>
               </div>
-              <div style={{ display: 'flex', gap: spacing[16] }}>
+              <div style={{ display: 'flex', gap: '10px' }}>
                 <span style={{ minWidth: '70px', fontWeight: 400 }}>
                   Instagram
                 </span>

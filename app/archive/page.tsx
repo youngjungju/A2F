@@ -102,7 +102,7 @@ export default function ArchivePage() {
       <div
         className="fixed z-50"
         style={{
-          top: `calc(${spacing[25]} + 40px + 15px)`, // Navigation top + Navigation height + 15px gap
+          top: 'calc(25px + 40px + 15px)', // Navigation top + Navigation height + 10px gap
           left: spacing[25],
           display: 'flex',
           flexDirection: 'column',
@@ -161,7 +161,7 @@ export default function ArchivePage() {
         style={{
           marginLeft: 'calc(284px + 48px)', // Navigation width + spacing
           marginRight: spacing[25],
-          paddingTop: `calc(${spacing[25]} + 40px + 15px)`, // About button top + height + 15px gap
+          paddingTop: 'calc(25px + 40px + 15px)', // About button top + height + 10px gap
           paddingLeft: spacing[25],
           paddingRight: spacing[25],
           paddingBottom: 0,
@@ -173,7 +173,7 @@ export default function ArchivePage() {
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: spacing[32],
+            gap: '10px',
             paddingBottom: spacing[48],
           }}
         >
