@@ -124,13 +124,45 @@ export default function AboutButton() {
                 <span style={{ minWidth: '70px', fontWeight: typography.fontWeight.medium }}>
                   Email
                 </span>
-                <span>johnwkim82@gmail.com</span>
+                <a
+                  href="mailto:johnwkim82@gmail.com"
+                  style={{
+                    color: 'rgba(0, 0, 0, 0.7)',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.textDecoration = 'underline';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.textDecoration = 'none';
+                  }}
+                >
+                  johnwkim82@gmail.com
+                </a>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <span style={{ minWidth: '70px', fontWeight: typography.fontWeight.medium }}>
                   Instagram
                 </span>
-                <span>joelkim.82</span>
+                <a
+                  href="https://www.instagram.com/joelkim.82?igsh=ZGdjdDNoNTdzMzY1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: 'rgba(0, 0, 0, 0.7)',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.textDecoration = 'underline';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.textDecoration = 'none';
+                  }}
+                >
+                  joelkim.82
+                </a>
               </div>
             </div>
           </div>
