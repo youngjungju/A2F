@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { PlayerData } from '@/lib/types';
 import { getAllPlayersFromSupabase } from '@/lib/playerData';
 import { spacing, typography } from '@/lib/designTokens';
 import AboutButton from '@/components/AboutButton';
+import PlayerCard from '@/components/PlayerCard';
 
 export default function ArchivePage() {
   const router = useRouter();
@@ -184,62 +184,11 @@ export default function ArchivePage() {
           }}
         >
           {filteredPlayers.map((player) => (
-            <div
+            <PlayerCard
               key={player.id}
+              player={player}
               onClick={() => handlePlayerClick(player)}
-              className="cursor-pointer transition-all hover:opacity-80"
-              style={{
-                width: '263.7px',
-              }}
-            >
-              {/* Player Image */}
-              <div
-                style={{
-                  width: '100%',
-                  height: '369.18px',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  marginBottom: '10px',
-                  position: 'relative',
-                }}
-              >
-                <Image
-                  src={player.image || '/assets/images/a2f.png'}
-                  alt={player.name}
-                  fill
-                  style={{
-                    objectFit: 'cover',
-                  }}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/assets/images/a2f.png';
-                  }}
-                />
-              </div>
-
-              {/* Player Name */}
-              <h3
-                style={{
-                  fontSize: typography.fontSize.body,
-                  fontWeight: typography.fontWeight.regular,
-                  color: '#000000',
-                  marginBottom: spacing[4],
-                }}
-              >
-                {player.name}
-              </h3>
-
-              {/* Player Position */}
-              <p
-                style={{
-                  fontSize: typography.fontSize.body,
-                  fontWeight: typography.fontWeight.regular,
-                  color: '#000000',
-                }}
-              >
-                {player.position || 'Position'}
-              </p>
-            </div>
+            />
           ))}
         </div>
 
