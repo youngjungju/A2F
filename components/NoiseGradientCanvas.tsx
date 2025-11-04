@@ -30,11 +30,21 @@ const fragmentShaderSource = `
   uniform float u_colorPositions[10];
   uniform vec3 u_colorValues[10];
 
-  // Simplex noise implementation
+  // Improved Simplex noise implementation with better interpolation
   vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
   vec3 permute(vec3 x) { return mod289(((x*34.0)+10.0)*x); }
 
+  // Quintic interpolation for smoother transitions (6x^5 - 15x^4 + 10x^3)
+  float quintic(float t) {
+    return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
+  }
+
+  vec2 quintic(vec2 t) {
+    return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
+  }
+
+  // Enhanced Simplex noise with quintic interpolation
   float snoise(vec2 v) {
     const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
     vec2 i  = floor(v + dot(v, C.yy));
@@ -57,15 +67,30 @@ const fragmentShaderSource = `
     return 130.0 * dot(m, g);
   }
 
+  // Improved FBM with smoother blending
   float fbm(vec2 p, int layers) {
-    float value = 0.0, amplitude = u_amplitude, frequency = 1.0;
+    float value = 0.0;
+    float amplitude = 1.0;
+    float frequency = 1.0;
+    float totalAmplitude = 0.0;
+
     for(int i = 0; i < 8; i++) {
       if(i >= layers) break;
-      value += amplitude * snoise(p * frequency);
+
+      // Add rotational variation per octave for more organic patterns
+      float angle = float(i) * 0.5;
+      mat2 rot = mat2(cos(angle), sin(angle), -sin(angle), cos(angle));
+      vec2 rotatedP = rot * p;
+
+      value += amplitude * snoise(rotatedP * frequency);
+      totalAmplitude += amplitude;
+
       frequency *= u_lacunarity;
       amplitude *= u_gain;
     }
-    return value;
+
+    // Normalize and apply amplitude as overall strength multiplier
+    return (value / totalAmplitude) * u_amplitude;
   }
 
   vec3 getColorFromScheme(float t) {
@@ -149,22 +174,54 @@ const fragmentShaderSource = `
     return 1.0 - smoothstep(r - 0.02, r, d);
   }
 
+  // Smooth dithering to eliminate banding
+  float dither(vec2 uv) {
+    // Triangular probability distribution for better dithering
+    float noise1 = fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453);
+    float noise2 = fract(sin(dot(uv, vec2(93.9898, 67.345))) * 43758.5453);
+    return (noise1 + noise2) * 0.5 - 0.5;
+  }
+
   void main() {
+    // Aspect-correct coordinates
     vec2 p = (v_uv * 2.0 - 1.0);
     p.x *= 1.5;
-    vec2 w = p + vec2(fbm(p * 0.3, 3), fbm(p * 0.5, 2)) * u_warpStrength;
-    float n = 0.0;
-    for(int i = 0; i < 5; i++) {
-      n += snoise(w * 0.5 * pow(2.0, float(i))) / pow(2.0, float(i));
-    }
-    float combined = clamp(pow(n * 0.5 + 0.5, 1.2), 0.0, 1.0);
-    vec3 color = getColorFromScheme(combined);
 
-    if (u_halftonePattern > 0 && applyHalftone(v_uv, combined) > 0.5) {
-      color = mix(color, vec3(1.0), combined * 0.3 + 0.2);
+    // Multi-scale domain warping for organic flow
+    vec2 warp1 = vec2(
+      fbm(p * 0.5, 3),
+      fbm(p * 0.5 + vec2(5.2, 1.3), 3)
+    ) * u_warpStrength * 0.5;
+
+    vec2 warp2 = vec2(
+      fbm((p + warp1) * 1.2, 2),
+      fbm((p + warp1) * 1.2 + vec2(3.7, 2.9), 2)
+    ) * u_warpStrength * 0.3;
+
+    vec2 finalPos = p + warp1 + warp2;
+
+    // Enhanced FBM with better frequency distribution
+    float n = fbm(finalPos * 0.8, u_layers);
+
+    // Smooth remapping with quintic curve for better color distribution
+    float t = n * 0.5 + 0.5; // Map from [-1,1] to [0,1]
+    t = quintic(clamp(t, 0.0, 1.0)); // Apply quintic smoothing
+
+    // Apply subtle dithering to eliminate color banding
+    float ditherAmount = dither(v_uv * 1000.0) / 255.0;
+    t = clamp(t + ditherAmount, 0.0, 1.0);
+
+    // Get color from gradient
+    vec3 color = getColorFromScheme(t);
+
+    // Apply halftone if enabled
+    if (u_halftonePattern > 0 && applyHalftone(v_uv, t) > 0.5) {
+      color = mix(color, vec3(1.0), t * 0.3 + 0.2);
     }
 
+    // Apply saturation with better grayscale conversion
     color = mix(vec3(dot(color, vec3(0.299, 0.587, 0.114))), color, u_saturation);
+
     gl_FragColor = vec4(color, 1.0);
   }
 `;
@@ -183,7 +240,11 @@ export default function NoiseGradientCanvas({ params, className = '' }: NoiseGra
     if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
-    const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true });
+    const gl = canvas.getContext('webgl', {
+      preserveDrawingBuffer: true,
+      antialias: true,
+      alpha: false
+    });
     if (!gl) {
       console.error('WebGL not supported');
       return;
@@ -235,6 +296,7 @@ export default function NoiseGradientCanvas({ params, className = '' }: NoiseGra
 
     gl.useProgram(program);
 
+    // Static render function
     const render = () => {
       if (!gl || !program) return;
 
@@ -269,8 +331,6 @@ export default function NoiseGradientCanvas({ params, className = '' }: NoiseGra
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
 
-    render();
-
     const handleResize = () => {
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
@@ -279,6 +339,9 @@ export default function NoiseGradientCanvas({ params, className = '' }: NoiseGra
 
     handleResize();
     window.addEventListener('resize', handleResize);
+
+    // Initial render
+    render();
 
     return () => {
       window.removeEventListener('resize', handleResize);
