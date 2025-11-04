@@ -17,6 +17,7 @@ function UniformMesh({ modelPath = '/assets/models/jersey_tigres/scene.gltf', pa
   const meshRef = useRef<THREE.Group>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
   const [originalTexture, setOriginalTexture] = useState<THREE.Texture | null>(null);
+  const [isReady, setIsReady] = useState(true);
   const { camera } = useThree();
 
   // Load GLTF model
@@ -99,7 +100,13 @@ function UniformMesh({ modelPath = '/assets/models/jersey_tigres/scene.gltf', pa
       }
     });
 
+    // Delay showing the mesh to ensure shader is applied
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 100); // 0.1 second delay
+
     return () => {
+      clearTimeout(timer);
       material.dispose();
     };
   }, [scene, camera, originalTexture, params]);
@@ -157,6 +164,7 @@ function UniformMesh({ modelPath = '/assets/models/jersey_tigres/scene.gltf', pa
       object={clonedScene}
       position={[0, 0, 0]}
       scale={1}
+      visible={isReady}
     />
   );
 }
