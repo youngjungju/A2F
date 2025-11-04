@@ -479,7 +479,7 @@ export default function ControlPanel({
               >
                 <div
                   style={{
-                    width: '12px',
+                    width: '8px',
                     height: '1px',
                     backgroundColor: '#000000',
                     borderRadius: '1px',
