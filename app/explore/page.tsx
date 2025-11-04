@@ -391,30 +391,42 @@ export default function ExplorePage() {
           bottom: spacing[28],
           right: spacing[25],
           minWidth: '283px',
+          minHeight: '83.87px',
         }}
       >
         <div
           style={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(20px)',
-            borderRadius: '24px',
+            borderRadius: '12px',
             padding: '12px',
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
           }}
         >
           <h3
             style={{
-              fontSize: typography.fontSize.headline,
-              fontWeight: typography.fontWeight.semibold,
+              fontSize: '14px',
+              fontFamily: 'Helvetica, Arial, sans-serif',
+              fontWeight: 400,
               color: 'rgba(0, 0, 0, 0.9)',
               marginBottom: spacing[8],
             }}
           >
             Career Palette
           </h3>
+          <div
+            style={{
+              width: '100%',
+              height: '1px',
+              backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              marginBottom: spacing[8],
+            }}
+          />
           <p
             style={{
-              fontSize: typography.fontSize.footnote,
+              fontSize: '10px',
+              fontFamily: 'Helvetica, Arial, sans-serif',
+              fontWeight: 400,
               color: 'rgba(0, 0, 0, 0.7)',
               lineHeight: typography.lineHeight.relaxed,
             }}

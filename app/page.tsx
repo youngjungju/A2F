@@ -216,8 +216,8 @@ export default function Home() {
           zIndex: 100,
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
-          borderRadius: '24px',
-          padding: `${spacing[16]} ${spacing[20]}`,
+          borderRadius: '12px',
+          padding: '12px',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
           minWidth: '283px',
           minHeight: '83.87px',
@@ -234,6 +234,14 @@ export default function Home() {
         >
           {viewMode === '2d' ? '2D Uniform Preview' : '3D Uniform Preview'}
         </h2>
+        <div
+          style={{
+            width: '100%',
+            height: '1px',
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            marginBottom: spacing[8],
+          }}
+        />
         <p
           style={{
             fontSize: '10px',
