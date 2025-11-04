@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Webcam from 'react-webcam';
 import NoiseGradientCanvas from '@/components/NoiseGradientCanvas';
@@ -26,6 +26,16 @@ export default function Home() {
   const [uniformName, setUniformName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const webcamRef = useRef<Webcam>(null);
+
+  // Force re-render shader on initial load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Trigger a params update by setting the same values
+      setParams(prev => ({ ...prev }));
+    }, 150); // Slight delay after component mount
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleWebcamError = useCallback((error: string | DOMException) => {
     console.error('Webcam error:', error);
