@@ -67,6 +67,9 @@ export default function ControlPanel({
 }: ControlPanelProps) {
   // 입력 중인 Portion 값을 저장하는 state
   const [editingPortions, setEditingPortions] = React.useState<{[key: number]: string}>({});
+  // 드래그 중인 아이템의 인덱스
+  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = React.useState<number | null>(null);
 
   // colorStops의 position을 비율로 변환하여 표시
   const getPortionPercentages = () => {
@@ -191,6 +194,44 @@ export default function ControlPanel({
     }
   };
 
+  // 드래그앤드롭 핸들러
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    // 색상 순서 재정렬
+    const newColorStops = [...params.colorStops];
+    const [draggedItem] = newColorStops.splice(draggedIndex, 1);
+    newColorStops.splice(dropIndex, 0, draggedItem);
+
+    onParamsChange({ ...params, colorStops: newColorStops });
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
   const sectionStyle = {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     backdropFilter: 'blur(20px)',
@@ -297,9 +338,10 @@ export default function ControlPanel({
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {/* Header Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: '45px 1fr 35px 20px', gap: '4px', paddingBottom: '4px' }}>
-            <span style={{ fontSize: '10px', fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 400, color: '#000000' }}>Portion</span>
-            <span style={{ fontSize: '10px', fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 400, color: '#000000' }}>Color Code</span>
+          <div style={{ display: 'grid', gridTemplateColumns: '20px 45px 1fr 35px 20px', gap: '4px', paddingBottom: '4px', alignItems: 'center' }}>
+            <span></span>
+            <span style={{ fontSize: '10px', fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 400, color: '#000000', textAlign: 'center' }}>Portion</span>
+            <span style={{ fontSize: '10px', fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 400, color: '#000000', paddingLeft: '4px' }}>Color Code</span>
             <span></span>
             <span></span>
           </div>
@@ -312,7 +354,40 @@ export default function ControlPanel({
               : Math.round(portions[index]).toString();
 
             return (
-              <div key={index} style={{ display: 'grid', gridTemplateColumns: '45px 1fr 35px 20px', gap: '4px', alignItems: 'center' }}>
+              <div
+                key={index}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, index)}
+                onDragEnd={handleDragEnd}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '20px 45px 1fr 35px 20px',
+                  gap: '4px',
+                  alignItems: 'center',
+                  padding: '4px',
+                  borderRadius: '4px',
+                  backgroundColor: dragOverIndex === index ? 'rgba(0, 0, 0, 0.05)' : 'transparent',
+                  transition: 'background-color 0.2s',
+                  cursor: 'grab',
+                }}
+              >
+                {/* Hamburger Icon */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                    cursor: 'grab',
+                    padding: '2px',
+                  }}
+                >
+                  <div style={{ width: '12px', height: '2px', backgroundColor: 'rgba(0, 0, 0, 0.4)', borderRadius: '1px' }}></div>
+                  <div style={{ width: '12px', height: '2px', backgroundColor: 'rgba(0, 0, 0, 0.4)', borderRadius: '1px' }}></div>
+                  <div style={{ width: '12px', height: '2px', backgroundColor: 'rgba(0, 0, 0, 0.4)', borderRadius: '1px' }}></div>
+                </div>
                 <input
                   type="text"
                   value={displayValue}
