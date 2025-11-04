@@ -132,7 +132,7 @@ export default function ExplorePage() {
         }}
       >
         <Image
-          src="https://njdeanhnuzthyptzsjtw.supabase.co/storage/v1/object/sign/video/loading.gif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jM2Q0ZjM3MS05YThjLTQ3NGMtOGM2MS0xNzAxNWZiYTAyZjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlby9sb2FkaW5nLmdpZiIsImlhdCI6MTc2MjIwNTAwNSwiZXhwIjo4NjU3NjIxMTg2MDV9.46J-YwzTc0ZCsE0diy2eGPYGyNvgn41rCy3VMhqkDIQ"
+          src="https://njdeanhnuzthyptzsjtw.supabase.co/storage/v1/object/sign/video/loading_v2.gif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jM2Q0ZjM3MS05YThjLTQ3NGMtOGM2MS0xNzAxNWZiYTAyZjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlby9sb2FkaW5nX3YyLmdpZiIsImlhdCI6MTc2MjI3NjMxNSwiZXhwIjo4NjU3NjIxODk5MTV9.NqdXJ5hnb1VrWHgKgvoF9QNl4-ZciGoCcnnOc79A5KE"
           alt="Loading"
           fill
           style={{
@@ -283,18 +283,19 @@ export default function ExplorePage() {
           style={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(20px)',
-            borderRadius: '8px',
-            padding: '10px',
+            borderRadius: '12px',
+            padding: '12px',
             minWidth: '284px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
           }}
         >
           <h3
             style={{
-              fontSize: '12px',
-              fontWeight: typography.fontWeight.semibold,
-              color: '#000000',
-              marginBottom: '8px',
+              fontSize: '14px',
+              fontFamily: 'Helvetica, Arial, sans-serif',
+              fontWeight: 400,
+              color: 'rgba(0, 0, 0, 0.9)',
+              marginBottom: spacing[8],
             }}
           >
             Career Timeline
@@ -306,7 +307,7 @@ export default function ExplorePage() {
               width: '100%',
               height: '1px',
               backgroundColor: 'rgba(0, 0, 0, 0.1)',
-              marginBottom: '8px',
+              marginBottom: spacing[8],
             }}
           />
 
@@ -321,18 +322,20 @@ export default function ExplorePage() {
           >
             <span
               style={{
-                fontSize: '9px',
-                fontWeight: typography.fontWeight.semibold,
-                color: '#000000',
+                fontSize: '10px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
+                color: 'rgba(0, 0, 0, 0.7)',
               }}
             >
               Career
             </span>
             <span
               style={{
-                fontSize: '9px',
-                fontWeight: typography.fontWeight.semibold,
-                color: '#000000',
+                fontSize: '10px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
+                color: 'rgba(0, 0, 0, 0.7)',
               }}
             >
               Team Name
@@ -354,18 +357,20 @@ export default function ExplorePage() {
               >
                 <span
                   style={{
-                    fontSize: '9px',
-                    color: '#000000',
-                    fontWeight: typography.fontWeight.regular,
+                    fontSize: '10px',
+                    fontFamily: 'Helvetica, Arial, sans-serif',
+                    fontWeight: 400,
+                    color: 'rgba(0, 0, 0, 0.7)',
                   }}
                 >
                   {club.percentage.toFixed(0)} %
                 </span>
                 <span
                   style={{
-                    fontSize: '9px',
-                    color: '#000000',
-                    fontWeight: typography.fontWeight.regular,
+                    fontSize: '10px',
+                    fontFamily: 'Helvetica, Arial, sans-serif',
+                    fontWeight: 400,
+                    color: 'rgba(0, 0, 0, 0.7)',
                   }}
                 >
                   {club.name} ({club.years}y)

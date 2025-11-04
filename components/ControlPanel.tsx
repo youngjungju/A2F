@@ -465,15 +465,27 @@ export default function ControlPanel({
                 onClick={() => removeColorStop(index)}
                 style={{
                   padding: '1px',
-                  fontSize: '12px',
-                  color: '#000000',
                   backgroundColor: 'transparent',
                   border: 'none',
                   cursor: 'pointer',
                   opacity: params.colorStops.length > 2 ? 1 : 0.3,
+                  width: '30px',
+                  minWidth: '30px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
                 disabled={params.colorStops.length <= 2}
-              >-</button>
+              >
+                <div
+                  style={{
+                    width: '12px',
+                    height: '1px',
+                    backgroundColor: '#000000',
+                    borderRadius: '1px',
+                  }}
+                />
+              </button>
             </div>
             );
           })}

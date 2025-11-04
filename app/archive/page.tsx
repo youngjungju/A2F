@@ -107,7 +107,7 @@ export default function ArchivePage() {
         }}
       >
         <Image
-          src="https://njdeanhnuzthyptzsjtw.supabase.co/storage/v1/object/sign/video/loading.gif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jM2Q0ZjM3MS05YThjLTQ3NGMtOGM2MS0xNzAxNWZiYTAyZjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlby9sb2FkaW5nLmdpZiIsImlhdCI6MTc2MjIwNTAwNSwiZXhwIjo4NjU3NjIxMTg2MDV9.46J-YwzTc0ZCsE0diy2eGPYGyNvgn41rCy3VMhqkDIQ"
+          src="https://njdeanhnuzthyptzsjtw.supabase.co/storage/v1/object/sign/video/loading_v2.gif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jM2Q0ZjM3MS05YThjLTQ3NGMtOGM2MS0xNzAxNWZiYTAyZjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2aWRlby9sb2FkaW5nX3YyLmdpZiIsImlhdCI6MTc2MjI3NjMxNSwiZXhwIjo4NjU3NjIxODk5MTV9.NqdXJ5hnb1VrWHgKgvoF9QNl4-ZciGoCcnnOc79A5KE"
           alt="Loading"
           fill
           style={{
