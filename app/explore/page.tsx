@@ -263,10 +263,11 @@ export default function ExplorePage() {
         >
           <h2
             style={{
-              fontSize: '12px',
-              fontWeight: typography.fontWeight.semibold,
-              color: '#000000',
-              marginBottom: '6px',
+              fontSize: '14px',
+              fontFamily: 'Helvetica, Arial, sans-serif',
+              fontWeight: 400,
+              color: 'rgba(0, 0, 0, 0.9)',
+              marginBottom: spacing[8],
             }}
           >
             {player.name}
