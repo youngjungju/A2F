@@ -176,7 +176,7 @@ export default function Home() {
           onClick={handleArchiveUniform}
           style={{
             padding: '8px 12px',
-            backgroundColor: '#000000',
+            backgroundColor: '#1E1E1E',
             borderRadius: '6px',
             color: colors.dark.label.primary,
             fontSize: '14px',
@@ -197,7 +197,7 @@ export default function Home() {
           onClick={handleDownload}
           style={{
             padding: '8px 12px',
-            backgroundColor: '#000000',
+            backgroundColor: '#1E1E1E',
             borderRadius: '6px',
             color: colors.dark.label.primary,
             fontSize: '14px',
@@ -459,7 +459,7 @@ export default function Home() {
                 disabled={isSaving}
                 style={{
                   padding: '8px 16px',
-                  backgroundColor: '#000000',
+                  backgroundColor: '#1E1E1E',
                   borderRadius: '6px',
                   color: colors.dark.label.primary,
                   fontSize: '12px',
