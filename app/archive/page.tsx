@@ -58,6 +58,21 @@ export default function ArchivePage() {
       });
     }
 
+    // Sort players:
+    // 1. First by number of clubs (descending)
+    // 2. Then put Custom position players at the end
+    filtered = filtered.sort((a, b) => {
+      const aIsCustom = a.position === 'Custom';
+      const bIsCustom = b.position === 'Custom';
+
+      // If one is Custom and the other isn't, Custom goes to the end
+      if (aIsCustom && !bIsCustom) return 1;
+      if (!aIsCustom && bIsCustom) return -1;
+
+      // If both are Custom or both are not Custom, sort by number of clubs (descending)
+      return b.clubs.length - a.clubs.length;
+    });
+
     setFilteredPlayers(filtered);
   }, [searchQuery, selectedPosition, players]);
 
@@ -93,9 +108,9 @@ export default function ArchivePage() {
       return a.localeCompare(b);
     });
 
-  // Add 'Custom' at the end if it exists in the data
+  // Add 'Custom' at the beginning (after 'All Position') if it exists in the data
   const hasCustom = uniquePositions.includes('Custom');
-  const positions = ['All Position', ...sortedPositions, ...(hasCustom ? ['Custom'] : [])];
+  const positions = ['All Position', ...(hasCustom ? ['Custom'] : []), ...sortedPositions];
 
   if (isLoading) {
     return (

@@ -32,7 +32,23 @@ export default function ExplorePage() {
 
       // 전체 선수 목록 가져오기
       const players = await getAllPlayersFromSupabase();
-      setAllPlayers(players);
+
+      // Sort players:
+      // 1. First by number of clubs (descending)
+      // 2. Then put Custom position players at the end
+      const sortedPlayers = players.sort((a, b) => {
+        const aIsCustom = a.position === 'Custom';
+        const bIsCustom = b.position === 'Custom';
+
+        // If one is Custom and the other isn't, Custom goes to the end
+        if (aIsCustom && !bIsCustom) return 1;
+        if (!aIsCustom && bIsCustom) return -1;
+
+        // If both are Custom or both are not Custom, sort by number of clubs (descending)
+        return b.clubs.length - a.clubs.length;
+      });
+
+      setAllPlayers(sortedPlayers);
 
       // localStorage에서 마지막으로 본 player ID 가져오기
       let lastPlayerId = localStorage.getItem('lastViewedPlayer');
