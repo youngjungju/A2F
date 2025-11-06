@@ -201,10 +201,10 @@ export default function ArchivePage() {
       <div
         style={{
           marginLeft: 'calc(284px + 48px)', // Navigation width + spacing
-          marginRight: spacing[25],
+          marginRight: spacing[16],
           paddingTop: 'calc(25px + 40px + 15px)', // About button top + height + 10px gap
           paddingLeft: spacing[25],
-          paddingRight: spacing[25],
+          paddingRight: spacing[0],
           paddingBottom: 0,
         }}
       >
@@ -215,7 +215,7 @@ export default function ArchivePage() {
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             columnGap: '10px',
-            rowGap: '40.58px',
+            rowGap: '42.58px',
             paddingBottom: spacing[48],
           }}
         >
