@@ -114,7 +114,7 @@ export const DEFAULT_NOISE_PARAMS: NoiseParams = {
   colorStops: [
     { position: 0.25, color: '#00459E' },   // 25% (0 -> 0.25)
     { position: 0.50, color: '#E11F09' },   // 25% (0.25 -> 0.50)
-    { position: 0.75, color: '#1F1358' },   // 25% (0.50 -> 0.75)
-    { position: 1.00, color: '#000000' },   // 25% (0.75 -> 1.00)
+    { position: 0.75, color: '#7357FF' },   // 25% (0.50 -> 0.75)
+    { position: 1.00, color: '#4D0000' },   // 25% (0.75 -> 1.00)
   ],
 };
