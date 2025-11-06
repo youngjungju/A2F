@@ -500,25 +500,19 @@ export default function ExplorePage() {
           left: spacing[25],
           top: '50%',
           transform: 'translateY(-50%)',
-          width: '48px',
-          height: '48px',
-          borderRadius: '50%',
-          backgroundColor: 'rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
+          background: 'none',
+          border: 'none',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+          padding: 0,
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
-          e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1.2)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
           e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
         }}
       >
@@ -547,25 +541,19 @@ export default function ExplorePage() {
           right: spacing[25],
           top: '50%',
           transform: 'translateY(-50%)',
-          width: '48px',
-          height: '48px',
-          borderRadius: '50%',
-          backgroundColor: 'rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
+          background: 'none',
+          border: 'none',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           transition: `all ${interaction.duration.normal} ${interaction.easing.standard}`,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+          padding: 0,
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.25)';
-          e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1.2)';
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
           e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
         }}
       >
