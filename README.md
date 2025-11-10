@@ -1,376 +1,937 @@
-# A2F (Allegiance to Fashion)
+# A2F Project - WebGL Noise Gradient Uniform Design Studio
 
-축구 선수의 커리어를 유니폼 패턴으로 시각화하는 인터랙티브 웹 애플리케이션
+> **Interactive Soccer Uniform Customization Platform Combining WebGL-Based Simplex Noise + Three.js 3D Rendering**
 
-## 프로젝트 개요
+![Project Version](https://img.shields.io/badge/version-0.1.0-blue)
+![Next.js](https://img.shields.io/badge/Next.js-15.5.5-black)
+![React](https://img.shields.io/badge/React-19.1.0-61dafb)
+![Three.js](https://img.shields.io/badge/Three.js-0.180.0-000000)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6)
 
-A2F 프로젝트는 축구 선수들의 해외 커리어를 예술적으로 시각화합니다. 각 선수가 소속했던 팀의 색상과 활동 기간을 바탕으로 독특한 유니폼 디자인을 생성하여, 선수의 커리어를 한눈에 볼 수 있는 "Career Palette"를 제공합니다.
+---
 
-## 주요 기능
+## 📖 Table of Contents
 
-### 1. Studio Mode (커스텀 유니폼 제작)
-- 사용자가 직접 유니폼 패턴을 디자인할 수 있는 인터랙티브 스튜디오
-- 2D/3D 뷰 모드 전환 (실시간 프리뷰)
-- 3D 모드에서 웹캠을 활용한 AR 가상 피팅 기능
-- 커스텀 디자인을 데이터베이스에 저장 (Archive Uniform)
-- PNG 이미지로 내보내기 (Export Uniform)
+- [Overview](#-overview)
+- [What is WebGL Noise Gradient?](#-what-is-webgl-noise-gradient)
+- [Features](#-features)
+- [Demo](#-demo)
+- [Project Structure](#-project-structure)
+- [Tech Stack](#-tech-stack)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Core Logic Analysis](#-core-logic-analysis)
+- [Architecture](#-architecture)
+- [Performance Optimization](#-performance-optimization)
+- [Deployment](#-deployment)
+- [Environment Variables](#-environment-variables)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-### 2. Explore Mode (선수 커리어 탐색)
-- 실제 축구 선수들의 커리어 데이터 기반 유니폼 패턴 시각화
-- 선수 정보 및 커리어 타임라인 표시
-- 좌우 화살표를 통한 선수 간 네비게이션
-- 선수의 사진과 3D 유니폼의 오버레이 렌더링
+---
 
-### 3. Archive (선수 아카이브)
-- 데이터베이스에 저장된 모든 선수 및 커스텀 유니폼 목록
-- 선수 이름 검색 기능 (한글/영문 양방향 지원)
-- 포지션별 필터링 (FW, MF, DF, GK 등)
-- 그리드 레이아웃으로 카드 형식 표시
+## 🎯 Overview
 
-## 기술 스택
+**A2F Project** is an interactive web application that leverages WebGL's GPU parallel processing capabilities and Simplex Noise algorithms to generate organic gradient patterns in real-time, applying them to Three.js 3D soccer uniform models.
 
-### Frontend Framework
-- **Next.js 15.5.5** (App Router, Turbopack)
-- **React 19.1.0** (Client Components 중심)
-- **TypeScript 5**
-- **Tailwind CSS 4**
+### Core Values
 
-### 3D Graphics & WebGL
+- **WebGL Shader Programming**: GPU-based real-time noise generation using GLSL
+- **Three.js 3D Integration**: Declarative 3D rendering through React Three Fiber
+- **Next.js SSR/CSR**: Hybrid architecture combining server-side and client-side rendering
+- **Real-time Customization**: Instant visual feedback on parameter changes
 
-이 프로젝트의 핵심은 WebGL을 활용한 실시간 그래픽 렌더링입니다.
+### Use Cases
 
-#### Three.js 기반 3D 렌더링
-- **Three.js 0.180.0**: WebGL 추상화 라이브러리
-- **@react-three/fiber 9.4.0**: React 컴포넌트로 Three.js를 선언적으로 사용
-- **@react-three/drei 10.7.6**: 3D 씬 구성을 위한 유용한 헬퍼 컴포넌트
+- Soccer uniform design simulation
+- Generative art creation
+- WebGL/Shader learning reference
+- Procedural 3D texture generation
 
-#### WebGL 셰이더 프로그래밍
+---
 
-프로젝트는 커스텀 GLSL 셰이더를 사용하여 독특한 노이즈 기반 패턴을 생성합니다.
+## 🌊 What is WebGL Noise Gradient?
 
-##### 1. 2D 렌더링 - Raw WebGL
+### WebGL and GLSL Shader Architecture
 
-[NoiseGradientCanvas.tsx](components/NoiseGradientCanvas.tsx)에서 순수 WebGL API를 직접 사용하여 2D 캔버스에 노이즈 패턴을 렌더링합니다.
+WebGL (Web Graphics Library) is a JavaScript API that allows direct GPU control in browsers. This project uses shaders written in **GLSL (OpenGL Shading Language)** to perform pixel-level parallel processing.
 
-**Vertex Shader:**
 ```glsl
+// Vertex Shader: Vertex Transformation
 attribute vec4 a_position;
 varying vec2 v_uv;
 
 void main() {
   gl_Position = a_position;
-  v_uv = a_position.xy * 0.5 + 0.5;
+  v_uv = a_position.xy * 0.5 + 0.5;  // Transform [-1,1] → [0,1] UV coordinates
 }
 ```
 
-**Fragment Shader 핵심 기능:**
-- **Simplex Noise**: 자연스러운 패턴 생성을 위한 퍼린 노이즈 구현
-- **FBM (Fractal Brownian Motion)**: 여러 옥타브의 노이즈를 레이어링하여 복잡한 패턴 생성
-- **Domain Warping**: 노이즈 공간을 왜곡하여 유기적인 흐름 효과
-- **Color Gradient System**: 최대 10개의 컬러 스톱을 보간하여 멀티 컬러 그라디언트 생성
-- **Halftone Pattern**: 선택적으로 하프톤 도트 패턴 오버레이
-
-**주요 Uniform 파라미터:**
 ```glsl
-uniform float u_amplitude;      // 노이즈 진폭
-uniform float u_saturation;     // 색상 채도
-uniform int u_layers;           // FBM 레이어 수
-uniform float u_lacunarity;     // 주파수 배율
-uniform float u_gain;           // 진폭 감쇠
-uniform float u_warpStrength;   // 도메인 왜곡 강도
-uniform int u_halftonePattern;  // 하프톤 패턴 활성화
-uniform float u_halftoneScale;  // 하프톤 스케일
-```
-
-**WebGL 초기화 프로세스:**
-1. WebGL 컨텍스트 생성 (`getContext('webgl')`)
-2. Vertex/Fragment 셰이더 컴파일 및 프로그램 링크
-3. 버퍼 생성 및 정점 데이터 바인딩 (전체 화면 사각형)
-4. Uniform 변수 설정 및 렌더링 루프
-
-##### 2. 3D 렌더링 - Three.js ShaderMaterial
-
-[UniformRenderer.tsx](components/UniformRenderer.tsx)에서 GLTF 3D 모델(유니폼)에 커스텀 셰이더를 적용합니다.
-
-**3D Vertex Shader:**
-```glsl
-varying vec2 vUv;
-varying vec3 vNormal;
-varying vec3 vPosition;
+// Fragment Shader: Pixel Color Determination
+precision highp float;
+varying vec2 v_uv;
 
 void main() {
-  vUv = uv;
-  vNormal = normalize(normalMatrix * normal);
-  vPosition = (modelMatrix * vec4(position, 1.0)).xyz;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  float noise = snoise(v_uv * 10.0);  // Generate Simplex Noise
+  vec3 color = mix(color1, color2, noise * 0.5 + 0.5);
+  gl_FragColor = vec4(color, 1.0);
 }
 ```
 
-**3D Fragment Shader 추가 기능:**
-- 2D 버전과 동일한 노이즈 알고리즘 사용
-- **Phong Lighting Model**: 법선 벡터 기반 조명 계산
-- **Specular Highlights**: 반사광 하이라이트 추가
-- **Camera Position**: 뷰 각도에 따른 동적 조명
+### Mathematical Principles of Simplex Noise
 
-**Three.js 씬 구성:**
-```typescript
-<Canvas
-  camera={{ position: [0, 0, 1.5], fov: 45 }}
-  gl={{
-    antialias: true,
-    preserveDrawingBuffer: true,  // 스크린샷 저장을 위해 필요
-    toneMapping: THREE.ACESFilmicToneMapping,
-    toneMappingExposure: 1.2,
-    alpha: transparentBackground,  // AR 모드에서 투명 배경
-  }}
->
-  {/* 조명 설정 */}
-  <ambientLight intensity={0.8} />
-  <directionalLight position={[3, 4, 4]} intensity={1.5} castShadow />
+This project uses **Ken Perlin**'s improved Simplex Noise algorithm.
 
-  {/* 3D 모델 */}
-  <UniformMesh modelPath="/assets/models/jersey_tigres/scene.gltf" />
+#### 1. Perlin Noise vs Simplex Noise
 
-  {/* 카메라 컨트롤 */}
-  <OrbitControls enableDamping dampingFactor={0.08} />
-</Canvas>
-```
+| Feature | Perlin Noise | Simplex Noise |
+|---------|--------------|---------------|
+| Dimensional Complexity | O(2^n) | O(n^2) |
+| Visual Characteristics | Grid artifacts present | More organic |
+| Computational Efficiency | Low (high dimensions) | High (all dimensions) |
 
-**GLTF 모델 처리:**
-1. `useGLTF` 훅으로 3D 모델 로드
-2. 원본 텍스처 추출 (필요 시 원본 유니폼 표시)
-3. 모든 메쉬를 순회하며 커스텀 ShaderMaterial 적용
-4. `useFrame` 훅으로 자동 회전 애니메이션
+#### 2. Simplex Noise Algorithm Implementation
 
-##### 3. 웹캠 통합 (AR 가상 피팅)
-
-3D 모드에서 웹캠 피드 위에 유니폼을 오버레이하여 가상 피팅 효과를 제공합니다.
-
-```typescript
-{/* 레이어 구조 */}
-<div style={{ zIndex: 1 }}>  {/* 웹캠 배경 */}
-  <Webcam mirrored videoConstraints={{ width: 1920, height: 1080 }} />
-</div>
-<div style={{ zIndex: 2 }}>  {/* 투명 배경의 3D 유니폼 */}
-  <UniformRenderer transparentBackground={true} />
-</div>
-```
-
-**WebGL Alpha Blending:**
-- `gl: { alpha: true }` - 투명 배경 활성화
-- Three.js의 투명도 설정으로 웹캠 위에 3D 오브젝트 합성
-
-### WebGL 셰이더 상세 분석
-
-#### Simplex Noise 알고리즘
-
-프로젝트는 Ken Perlin의 Simplex Noise를 GLSL로 구현하여 사용합니다. 이는 Perlin Noise보다 계산이 효율적이며 더 자연스러운 패턴을 생성합니다.
-
-**핵심 함수:**
 ```glsl
 float snoise(vec2 v) {
-  // Simplex grid 계산
-  vec2 i = floor(v + dot(v, C.yy));
+  // 1. Skew: Transform (x,y) coordinates to simplex grid
+  const vec4 C = vec4(0.211324865405187,   // (3-sqrt(3))/6
+                      0.366025403784439,   // 0.5*(sqrt(3)-1)
+                      -0.577350269189626,  // -1+2*C.x
+                      0.024390243902439);  // 1/41
+
+  vec2 i  = floor(v + dot(v, C.yy));
   vec2 x0 = v - i + dot(i, C.xx);
 
-  // 그라디언트 벡터 계산
+  // 2. Find three vertices within simplex
+  vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+  vec4 x12 = x0.xyxy + C.xxzz;
+  x12.xy -= i1;
+
+  // 3. Calculate gradients at each vertex
+  i = mod289(i);
   vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0))
-                   + i.x + vec3(0.0, i1.x, 1.0));
+                          + i.x + vec3(0.0, i1.x, 1.0));
 
-  // 노이즈 값 계산 및 반환
-  return 130.0 * dot(m, g);
+  // 4. Distance-based falloff function (Radial Falloff)
+  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+  m = m*m;
+  m = m*m;
+
+  // 5. Dot product of gradient and distance vectors
+  vec3 x = 2.0 * fract(p * C.www) - 1.0;
+  vec3 h = abs(x) - 0.5;
+  vec3 ox = floor(x + 0.5);
+  vec3 a0 = x - ox;
+
+  m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
+
+  vec3 g;
+  g.x  = a0.x  * x0.x  + h.x  * x0.y;
+  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+
+  return 130.0 * dot(m, g);  // Normalized noise value [-1, 1]
 }
 ```
 
-#### FBM (Fractal Brownian Motion)
+#### 3. Fractional Brownian Motion (fBM)
 
-여러 주파수의 노이즈를 합성하여 자연스러운 프랙탈 패턴을 생성합니다.
+Overlaying multiple frequencies of noise to create complex organic patterns.
 
 ```glsl
-float fbm(vec2 p, int layers) {
-  float value = 0.0, amplitude = u_amplitude, frequency = 1.0;
-  for(int i = 0; i < 8; i++) {
-    if(i >= layers) break;
-    value += amplitude * snoise(p * frequency);
-    frequency *= u_lacunarity;  // 주파수 증가
-    amplitude *= u_gain;         // 진폭 감소
+float fbm(vec2 p, int octaves) {
+  float value = 0.0;
+  float amplitude = 1.0;
+  float frequency = 1.0;
+  float totalAmplitude = 0.0;
+
+  for(int i = 0; i < octaves; i++) {
+    // Apply rotation per octave for more organic patterns
+    float angle = float(i) * 0.5;
+    mat2 rot = mat2(cos(angle), sin(angle), -sin(angle), cos(angle));
+    vec2 rotatedP = rot * p;
+
+    value += amplitude * snoise(rotatedP * frequency);
+    totalAmplitude += amplitude;
+
+    frequency *= lacunarity;  // Frequency increase (default: 2.3)
+    amplitude *= gain;         // Amplitude decay (default: 0.65)
   }
-  return value;
+
+  return value / totalAmplitude;
 }
 ```
 
-#### Domain Warping
+**Parameter Explanations:**
+- `octaves`: Number of noise layers to overlay (detail level)
+- `lacunarity`: Frequency multiplier per octave (2.0 = frequency doubles each octave)
+- `gain`: Amplitude decay rate per octave (0.5 = amplitude halves each octave)
 
-노이즈 공간 자체를 왜곡하여 더 복잡하고 유기적인 패턴을 생성합니다.
+#### 4. Domain Warping
+
+Distorting UV coordinates themselves with noise to create even more complex patterns.
 
 ```glsl
-vec2 w = p + vec2(fbm(p * 0.3, 3), fbm(p * 0.5, 2)) * u_warpStrength;
-float n = snoise(w);
+vec2 warp1 = vec2(
+  fbm(p * 0.5, 3),
+  fbm(p * 0.5 + vec2(5.2, 1.3), 3)
+) * warpStrength * 0.5;
+
+vec2 warp2 = vec2(
+  fbm((p + warp1) * 1.2, 2),
+  fbm((p + warp1) * 1.2 + vec2(3.7, 2.9), 2)
+) * warpStrength * 0.3;
+
+vec2 finalPos = p + warp1 + warp2;
+float noise = fbm(finalPos * 0.8, layers);
 ```
 
-#### 컬러 그라디언트 시스템
+#### 5. Quintic Interpolation
 
-최대 10개의 컬러 스톱을 smoothstep 보간하여 부드러운 멀티 컬러 그라디언트를 생성합니다.
+Quintic interpolation function for smooth color transitions:
+
+```glsl
+float quintic(float t) {
+  return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);  // 6t^5 - 15t^4 + 10t^3
+}
+```
+
+Graph characteristics:
+- **First derivative = 0** at 0 and 1 (smooth start/end)
+- Continuous second derivative (visually more natural transitions)
+
+#### 6. Gradient Mapping
+
+Converting noise values [-1, 1] to user-defined color schemes:
 
 ```glsl
 vec3 getColorFromScheme(float t) {
-  // 현재 노이즈 값이 속한 컬러 세그먼트 찾기
-  for(int i = 0; i < 9; i++) {
-    if(i >= u_colorStopCount - 1) break;
-    if(t >= u_colorPositions[i] && t <= u_colorPositions[i + 1]) {
-      float blend = smoothstep(u_colorPositions[i],
-                               u_colorPositions[i + 1], t);
-      return mix(u_colorValues[i], u_colorValues[i + 1], blend);
+  t = clamp(t, 0.0, 1.0);
+
+  // Linear interpolation between color stops
+  for(int i = 0; i < u_colorStopCount - 1; i++) {
+    if(t >= u_colorPositions[i] && t <= u_colorPositions[i+1]) {
+      float blend = (t - u_colorPositions[i]) /
+                    (u_colorPositions[i+1] - u_colorPositions[i]);
+      return mix(u_colorValues[i], u_colorValues[i+1], blend);
     }
   }
+
   return u_colorValues[u_colorStopCount - 1];
 }
 ```
 
-#### WebGL 성능 최적화
+#### 7. Dithering
 
-1. **Shader 최적화**
-   - WebGL 1.0 호환성을 위한 루프 언롤링
-   - `preserveDrawingBuffer`로 불필요한 재렌더링 방지
+Adding noise to eliminate color banding:
 
-2. **동적 업데이트**
-   - Uniform 변수만 업데이트하여 리컴파일 방지
-   - React useEffect로 파라미터 변경 감지 및 GPU 업로드
-
-3. **메모리 관리**
-   - 컴포넌트 언마운트 시 WebGL 리소스 정리 (shader, program, buffer dispose)
-
-### 데이터베이스
-- **Supabase** (PostgreSQL)
-  - Players 테이블: 선수 정보 및 커리어 데이터
-  - 커스텀 유니폼 저장
-  - Storage: 선수 이미지 및 로딩 애니메이션
-
-### 기타 라이브러리
-- **react-webcam 7.2.0**: 웹캠 통합
-- **webscreensaver 1.0.6**: 화면보호기 기능
-
-## 프로젝트 구조
-
-```
-a2f-project/
-├── app/                          # Next.js App Router 페이지
-│   ├── page.tsx                  # Studio Mode (메인 페이지)
-│   ├── explore/page.tsx          # Explore Mode (선수 탐색)
-│   ├── archive/page.tsx          # Archive (선수 목록)
-│   ├── about/page.tsx            # About 페이지
-│   └── layout.tsx                # 루트 레이아웃
-├── components/                   # React 컴포넌트
-│   ├── UniformRenderer.tsx       # 3D 유니폼 렌더러 (Three.js)
-│   ├── NoiseGradientCanvas.tsx   # 2D 노이즈 패턴 (Raw WebGL)
-│   ├── ControlPanel.tsx          # 패턴 조정 컨트롤 패널
-│   ├── PlayerCard.tsx            # 선수 카드 컴포넌트
-│   └── Navigation.tsx            # 네비게이션 바
-├── lib/                          # 유틸리티 및 타입
-│   ├── shaders.ts                # GLSL 셰이더 코드
-│   ├── types.ts                  # TypeScript 타입 정의
-│   ├── playerData.ts             # 선수 데이터 API
-│   ├── supabase.ts               # Supabase 클라이언트
-│   ├── koreanNameMapping.ts      # 한글 이름 매핑
-│   └── designTokens.ts           # 디자인 토큰
-└── public/assets/models/         # 3D 모델 (GLTF)
-    └── jersey_tigres/
-        └── scene.gltf            # 유니폼 3D 모델
-```
-
-## 데이터 구조
-
-### NoiseParams (패턴 생성 파라미터)
-```typescript
-interface NoiseParams {
-  amplitude: number;        // 노이즈 진폭 (0-5)
-  saturation: number;       // 색상 채도 (0-1)
-  layers: number;           // FBM 레이어 수 (1-8)
-  lacunarity: number;       // 주파수 배율 (1-4)
-  gain: number;             // 진폭 감쇠 (0-1)
-  warpStrength: number;     // 도메인 왜곡 강도 (0-3)
-  halftonePattern: number;  // 하프톤 패턴 (0/1)
-  halftoneScale: number;    // 하프톤 스케일 (10-100)
-  colorStops: ColorStop[];  // 컬러 그라디언트 (최대 10개)
+```glsl
+float dither(vec2 uv) {
+  float noise1 = fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453);
+  float noise2 = fract(sin(dot(uv, vec2(93.9898, 67.345))) * 43758.5453);
+  return (noise1 + noise2) * 0.5 - 0.5;  // Triangular distribution
 }
+
+// Application
+float ditherAmount = dither(v_uv * 1000.0) / 255.0;
+t = clamp(t + ditherAmount, 0.0, 1.0);
 ```
 
-### PlayerData (선수 정보)
-```typescript
-interface PlayerData {
-  id: string;
-  name: string;             // 영문 이름
-  nameKo: string;           // 한글 이름
-  clubs: Club[];            // 소속 팀 히스토리
-  position: string;         // 포지션
-  description: string;      // 설명
-  // Heatmap Control (커스텀 유니폼용)
-  saturation?: number;
-  amplitude?: number;
-  lacunarity?: number;
-  grain?: number;
-  warpStrength?: number;
-}
+### Benefits of GPU Parallel Processing
+
+1. **Massive Parallelism**: 1920x1080 resolution = 2,073,600 pixels computed **simultaneously**
+2. **Real-time Performance**: Generate complex noise patterns at 60 FPS
+3. **No CPU Load**: Main thread focuses only on UI event handling
+
 ```
-
-## 설치 및 실행
-
-### 환경 변수 설정
-`.env.local` 파일 생성:
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+CPU (Sequential)      GPU (Parallel)
+Pixel 1 → Pixel 2     Pixel 1
+  ↓                   Pixel 2
+Pixel 3 → Pixel 4     Pixel 3
+  ↓                   Pixel 4
+...                   ...
+                      Pixel 2,073,600
+                      ↓
+                      Simultaneous completion (16ms @ 60fps)
 ```
-
-### 개발 서버 실행
-```bash
-# 패키지 설치
-npm install
-
-# 개발 서버 (Turbopack)
-npm run dev
-
-# 빌드
-npm run build
-
-# 프로덕션 서버
-npm start
-```
-
-개발 서버는 `http://localhost:3000`에서 실행됩니다.
-
-## 주요 페이지
-
-### 1. Studio Mode (`/`)
-- **목적**: 사용자가 직접 유니폼 패턴을 디자인하고 저장
-- **기능**:
-  - Heatmap Control 패널로 노이즈 파라미터 조정
-  - 최대 9개의 컬러 스톱 추가/수정/삭제
-  - 2D/3D 뷰 모드 실시간 전환
-  - 3D 모드에서 웹캠 활성화 시 AR 가상 피팅
-  - "Archive Uniform": 디자인을 데이터베이스에 저장
-  - "Export Uniform": PNG 이미지로 다운로드
-
-### 2. Explore Mode (`/explore`)
-- **목적**: 실제 선수 커리어를 시각화한 유니폼 감상
-- **기능**:
-  - 선수별 고유한 Career Palette (팀 색상 기반)
-  - 선수 정보 및 커리어 타임라인 표시
-  - 좌우 화살표로 이전/다음 선수 탐색
-  - 배경에 선수 사진, 전면에 3D 유니폼 오버레이
-  - localStorage에 마지막으로 본 선수 저장
-
-### 3. Archive (`/archive`)
-- **목적**: 모든 선수 및 커스텀 유니폼 아카이브
-- **기능**:
-  - 검색: 한글/영문 선수 이름 검색 (음역 지원)
-  - 필터: 포지션별 필터링 (All Position, FW, MF, DF, GK, Custom 등)
-  - 선수 카드 클릭 시 Explore 페이지로 이동
-
-## 라이선스
-
-이 프로젝트는 개인 프로젝트로, 상업적 사용에 대한 라이선스는 별도 문의 바랍니다.
 
 ---
 
-**© 2025 A2F Project**
+## ✨ Features
+
+### 1. Interactive Noise Parameters
+- **Amplitude**: Noise intensity control (0-4)
+- **Saturation**: Color saturation adjustment (0-2)
+- **Lacunarity**: Frequency multiplier (0.7-3.9)
+- **Grain**: Inter-octave amplitude decay (0.35-0.95)
+- **Warp Strength**: Domain warping intensity (0-2)
+
+### 2. Multi-Color Gradient System
+- Support for up to 4 color stops
+- Real-time color picker and HEX code input
+- Drag-and-drop color reordering
+- Percentage-based gradient control
+
+### 3. Dual Rendering Mode
+- **2D Canvas**: Native WebGL rendering
+- **3D Model**: Shader application to Three.js + GLTF uniform model
+
+### 4. Webcam Integration (3D Mode)
+- Real-time webcam background
+- Transparent background 3D rendering
+- AR-style uniform preview
+
+### 5. Archive & Export
+- Supabase database integration
+- Custom uniform saving
+- PNG image export (Canvas API)
+
+---
+
+## 🎬 Demo
+
+*(Insert project execution GIF/video)*
+
+### Screenshot Examples
+
+```bash
+# Demo image paths
+/public/assets/demo/
+├── 2d-mode.gif
+├── 3d-mode.gif
+├── color-control.gif
+└── webcam-integration.gif
+```
+
+---
+
+## 📁 Project Structure
+
+```
+a2f-project/
+├── app/                          # Next.js App Router
+│   ├── page.tsx                  # Home page (Studio)
+│   ├── studio/page.tsx           # Studio page
+│   ├── archive/page.tsx          # Archive page
+│   ├── explore/page.tsx          # Explore page
+│   ├── layout.tsx                # Root layout
+│   └── globals.css               # Global styles
+│
+├── components/                   # React components
+│   ├── NoiseGradientCanvas.tsx   # 2D WebGL canvas (Core)
+│   ├── UniformRenderer.tsx       # 3D Three.js renderer (Core)
+│   ├── ControlPanel.tsx          # Parameter control UI
+│   ├── PlayerCard.tsx            # Player card
+│   ├── Navigation.tsx            # Navigation bar
+│   ├── AboutButton.tsx           # About button
+│   └── ScreenSaver.tsx           # Screen saver
+│
+├── lib/                          # Utilities and types
+│   ├── shaders.ts                # GLSL shaders for Three.js
+│   ├── types.ts                  # TypeScript type definitions
+│   ├── designTokens.ts           # Design system tokens
+│   ├── supabase.ts               # Supabase client
+│   ├── playerData.ts             # Player data
+│   └── koreanNameMapping.ts      # Korean name mapping
+│
+├── public/                       # Static resources
+│   ├── assets/
+│   │   └── models/
+│   │       └── jersey_tigres/    # 3D uniform model (GLTF)
+│   └── ...
+│
+├── scripts/                      # Database scripts
+│   ├── create-archives.ts        # Archive creation
+│   ├── seed-players.ts           # Player seeding
+│   └── add_heatmap_columns.sql   # DB schema update
+│
+├── next.config.ts                # Next.js configuration
+├── tsconfig.json                 # TypeScript configuration
+├── package.json                  # Dependency management
+└── README.md                     # Project documentation
+```
+
+### Core File Roles
+
+| File | Role |
+|------|------|
+| [components/NoiseGradientCanvas.tsx](components/NoiseGradientCanvas.tsx) | WebGL context creation, shader compilation, 2D rendering |
+| [components/UniformRenderer.tsx](components/UniformRenderer.tsx) | Three.js scene composition, 3D model loading, shader material application |
+| [lib/shaders.ts](lib/shaders.ts) | Vertex/Fragment shader source code |
+| [lib/types.ts](lib/types.ts) | Core types like NoiseParams, ColorStop |
+| [app/page.tsx](app/page.tsx) | Main UI layout, state management, Supabase integration |
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend Core
+- **[Next.js 15.5.5](https://nextjs.org/)**: React framework (App Router)
+- **[React 19.1.0](https://react.dev/)**: UI library
+- **[TypeScript 5.x](https://www.typescriptlang.org/)**: Static type system
+
+### 3D & Graphics
+- **[Three.js 0.180.0](https://threejs.org/)**: WebGL abstraction library
+- **[@react-three/fiber 9.4.0](https://docs.pmnd.rs/react-three-fiber/)**: React renderer for Three.js
+- **[@react-three/drei 10.7.6](https://github.com/pmndrs/drei)**: Three.js helper components
+- **WebGL/GLSL**: GPU shader programming
+
+### Backend & Database
+- **[Supabase](https://supabase.com/)**: PostgreSQL-based BaaS
+- **[@supabase/supabase-js 2.76.1](https://github.com/supabase/supabase-js)**: Supabase client
+
+### Styling & UI
+- **[Tailwind CSS 4.x](https://tailwindcss.com/)**: Utility-first CSS framework
+- **Custom Design Tokens**: Design system
+
+### Additional Libraries
+- **[react-webcam 7.2.0](https://github.com/mozmorris/react-webcam)**: Webcam integration
+- **[webscreensaver 1.0.6](https://github.com/brianreavis/webscreensaver)**: Screen saver
+
+### Development Tools
+- **ESLint 9.x**: Code linting
+- **PostCSS**: CSS preprocessing
+
+---
+
+## 🚀 Installation
+
+### Requirements
+
+- **Node.js**: 20.x or higher
+- **npm / pnpm / yarn**: Latest version
+- **WebGL-supported browser**: Chrome, Firefox, Safari (latest versions)
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/your-username/a2f-project.git
+cd a2f-project
+```
+
+### 2. Install Dependencies
+
+```bash
+# npm
+npm install
+
+# pnpm (recommended)
+pnpm install
+
+# yarn
+yarn install
+```
+
+### 3. Configure Environment Variables
+
+Create `.env.local` file:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 4. Run Development Server
+
+```bash
+npm run dev
+# or
+pnpm dev
+# or
+yarn dev
+```
+
+Access [http://localhost:3000](http://localhost:3000) in browser
+
+### 5. Production Build
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+## 📖 Usage
+
+### Basic Workflow
+
+1. **Adjust Parameters**: Change noise parameters with sliders in the left Control Panel
+2. **Customize Colors**: Add/remove/reorder colors in the Color Control section
+3. **Switch View Mode**: Toggle between 2D/3D rendering with mode buttons
+4. **Save/Export**: Archive Uniform (DB save) or Export Uniform (PNG download)
+
+### Modifying Shader Code
+
+#### Modifying 2D WebGL Shader
+
+Edit `fragmentShaderSource` in [components/NoiseGradientCanvas.tsx](components/NoiseGradientCanvas.tsx):
+
+```glsl
+// Example: Change noise scale
+float n = fbm(finalPos * 1.5, u_layers);  // Changed from 0.8 → 1.5
+```
+
+#### Modifying 3D Three.js Shader
+
+Edit `noiseFragmentShader` in [lib/shaders.ts](lib/shaders.ts):
+
+```glsl
+// Example: Change lighting intensity
+float diffuse = 0.6 + d * 0.4;  // Brighter: changed from 0.4 + d * 0.6
+```
+
+**Note**: Browser refresh required after shader modifications
+
+### WebGL Context Considerations
+
+- **Context Loss**: WebGL context may be lost when switching to background on mobile
+- **Memory Limits**: High-resolution textures may exceed GPU memory
+- **Browser Compatibility**: Safari has limited WebGL 2.0 feature support
+
+---
+
+## 🔬 Core Logic Analysis
+
+### 1. NoiseGradientCanvas.tsx - WebGL Initialization
+
+```typescript
+useEffect(() => {
+  const canvas = canvasRef.current;
+  const gl = canvas.getContext('webgl', {
+    preserveDrawingBuffer: true,  // Support canvas.toDataURL()
+    antialias: true,               // Edge smoothing
+    alpha: false                   // Disable transparent background
+  });
+
+  // 1. Compile Vertex Shader
+  const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(vertexShader, vertexShaderSource);
+  gl.compileShader(vertexShader);
+
+  // 2. Compile Fragment Shader
+  const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+  gl.shaderSource(fragmentShader, fragmentShaderSource);
+  gl.compileShader(fragmentShader);
+
+  // 3. Link Program
+  const program = gl.createProgram();
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+
+  // 4. Create Vertex Buffer (full-screen quad)
+  const positions = [-1, -1, 1, -1, -1, 1, 1, 1];
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+  // 5. Pass Uniforms and Render
+  gl.uniform1f(gl.getUniformLocation(program, 'u_amplitude'), params.amplitude);
+  // ... other uniforms
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+}, []);
+```
+
+### 2. UniformRenderer.tsx - Three.js Shader Material
+
+```typescript
+const material = new THREE.ShaderMaterial({
+  uniforms: {
+    u_amplitude: { value: params.amplitude },
+    u_colorStopCount: { value: params.colorStops.length },
+    u_colorPositions: { value: positions },
+    u_colorValues: { value: colorValues },
+    cameraPosition: { value: camera.position },
+  },
+  vertexShader: noiseVertexShader,
+  fragmentShader: noiseFragmentShader,
+  side: THREE.DoubleSide,  // Double-sided rendering
+});
+
+// Apply shader to all meshes in GLTF model
+scene.traverse((child) => {
+  if (child.isMesh) {
+    child.material = material;
+    child.castShadow = true;
+    child.receiveShadow = true;
+  }
+});
+```
+
+### 3. Real-time Parameter Updates
+
+```typescript
+// Update uniforms with React Hook
+useEffect(() => {
+  if (!materialRef.current) return;
+
+  materialRef.current.uniforms.u_amplitude.value = params.amplitude;
+  materialRef.current.uniforms.u_saturation.value = params.saturation;
+  // ... other uniform updates
+
+  // Update color stops
+  const colorValues = params.colorStops.map(stop => {
+    const hex = stop.color.replace('#', '');
+    return new THREE.Vector3(
+      parseInt(hex.substring(0, 2), 16) / 255,
+      parseInt(hex.substring(2, 4), 16) / 255,
+      parseInt(hex.substring(4, 6), 16) / 255
+    );
+  });
+
+  materialRef.current.uniforms.u_colorValues.value = colorValues;
+}, [params]);
+```
+
+### 4. Canvas Export (PNG)
+
+```typescript
+const handleDownload = () => {
+  const canvas = document.querySelector('canvas');
+  const dataURL = canvas.toDataURL('image/png');  // WebGL → Base64
+
+  const link = document.createElement('a');
+  link.download = `a2f-${viewMode}-${timestamp}.png`;
+  link.href = dataURL;
+  link.click();
+};
+```
+
+---
+
+## 🏗 Architecture
+
+### Overall System Diagram
+
+```
+┌─────────────────────────────────────────────────┐
+│          Next.js App Router (SSR/CSR)           │
+├─────────────────────────────────────────────────┤
+│  app/page.tsx                                   │
+│  ├─ useState<NoiseParams>     ← State mgmt     │
+│  ├─ ControlPanel              ← UI Controls     │
+│  ├─ NoiseGradientCanvas (2D)  ← WebGL          │
+│  └─ UniformRenderer (3D)       ← Three.js       │
+└─────────────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────┐
+│              WebGL Layer (GPU)                  │
+├─────────────────────────────────────────────────┤
+│  Vertex Shader → Rasterizer → Fragment Shader  │
+│       ↓                              ↓          │
+│  gl_Position                   gl_FragColor     │
+│  (vertex transform)            (pixel color)    │
+└─────────────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────┐
+│            Three.js Layer (3D)                  │
+├─────────────────────────────────────────────────┤
+│  Scene → Camera → Renderer                      │
+│    ↓                                            │
+│  GLTF Model + ShaderMaterial                    │
+│    ↓                                            │
+│  OrbitControls (interaction)                    │
+└─────────────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────┐
+│          Supabase (PostgreSQL)                  │
+├─────────────────────────────────────────────────┤
+│  Players Table                                  │
+│  ├─ Player Name                                 │
+│  ├─ NoiseParams (JSON)                          │
+│  └─ Teams/Colors (Normalized)                   │
+└─────────────────────────────────────────────────┘
+```
+
+### Rendering Pipeline
+
+#### 2D Mode (WebGL)
+
+```
+User Input (ControlPanel)
+    ↓
+React State Update (params)
+    ↓
+useEffect Hook Trigger
+    ↓
+gl.uniform1f(...) - Pass Uniforms
+    ↓
+gl.drawArrays(TRIANGLE_STRIP) - Draw Call
+    ↓
+GPU: Vertex Shader → Fragment Shader
+    ↓
+Canvas Pixel Update (60fps)
+```
+
+#### 3D Mode (Three.js + WebGL)
+
+```
+User Input (ControlPanel)
+    ↓
+React State Update (params)
+    ↓
+ShaderMaterial.uniforms Update
+    ↓
+useFrame Hook (RAF loop)
+    ↓
+Three.js Renderer.render(scene, camera)
+    ↓
+WebGL Shader Pipeline
+    ↓
+Auto-rotation (rotation.y += 0.003)
+```
+
+### Next.js SSR/CSR Strategy
+
+```typescript
+// Dynamic Import (CSR only)
+const UniformRenderer = dynamic(() => import('@/components/UniformRenderer'), {
+  ssr: false,  // Three.js is browser-only
+  loading: () => <LoadingSpinner />
+});
+```
+
+---
+
+## ⚡ Performance Optimization
+
+### 1. WebGL Context Reuse
+
+```typescript
+const glRef = useRef<WebGLRenderingContext | null>(null);
+const programRef = useRef<WebGLProgram | null>(null);
+
+// Create once during initialization
+useEffect(() => {
+  glRef.current = canvas.getContext('webgl');
+  programRef.current = createProgram(...);
+}, []);
+
+// Update only uniforms on parameter changes
+useEffect(() => {
+  gl.uniform1f(...);  // No shader recompilation
+}, [params]);
+```
+
+### 2. Three.js Memory Management
+
+```typescript
+useEffect(() => {
+  return () => {
+    // Cleanup: Prevent memory leaks
+    material.dispose();
+    geometry.dispose();
+    texture.dispose();
+  };
+}, []);
+```
+
+### 3. requestAnimationFrame vs useFrame
+
+```typescript
+// ❌ Inefficient: Manual RAF
+useEffect(() => {
+  const animate = () => {
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+  };
+  animate();
+}, []);
+
+// ✅ Efficient: React Three Fiber's useFrame
+useFrame(() => {
+  meshRef.current.rotation.y += 0.003;  // Synced with Three.js render loop
+});
+```
+
+### 4. Shader Optimization
+
+```glsl
+// ❌ Inefficient: Conditional inside loop
+for(int i = 0; i < 10; i++) {
+  if(i < u_colorStopCount) {
+    // ...
+  }
+}
+
+// ✅ Efficient: Early exit
+for(int i = 0; i < 10; i++) {
+  if(i >= u_colorStopCount) break;
+  // ...
+}
+```
+
+### 5. Mobile Optimization
+
+- **Resolution Scaling**: `gl.canvas.width = window.innerWidth * 0.8` (mobile)
+- **Reduce Octaves**: `layers: 3` on mobile (desktop uses `4`)
+- **Texture Compression**: Apply Draco compression to GLTF models
+
+---
+
+## 🌐 Deployment
+
+### Vercel Deployment (Recommended)
+
+```bash
+# 1. Install Vercel CLI
+npm i -g vercel
+
+# 2. Deploy Project
+vercel
+
+# 3. Production Deployment
+vercel --prod
+```
+
+### Environment Variable Setup (Vercel Dashboard)
+
+```
+Settings → Environment Variables:
+NEXT_PUBLIC_SUPABASE_URL = https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY = your-anon-key
+```
+
+### Asset Path Optimization
+
+`next.config.ts`:
+
+```typescript
+const nextConfig = {
+  images: {
+    unoptimized: true,  // Required for static export
+  },
+  async headers() {
+    return [
+      {
+        source: '/assets/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+    ];
+  },
+};
+```
+
+---
+
+## 🔐 Environment Variables
+
+### `.env.local` (Local Development)
+
+```bash
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# (Optional) Analytics
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+```
+
+### Supabase Table Schema
+
+```sql
+-- Players Table (see scripts/add_heatmap_columns.sql)
+CREATE TABLE "Players" (
+  id SERIAL PRIMARY KEY,
+  "Player Name" TEXT,
+  "Position" TEXT,
+  "Saturation" NUMERIC,
+  "Amplitude" NUMERIC,
+  "Lacunarity" NUMERIC,
+  "Grain" NUMERIC,
+  "Warp Strength" NUMERIC,
+  "Teams/0/Color" TEXT,
+  "Teams/0/Percentage" TEXT,
+  -- ... (up to Teams/8)
+);
+```
+
+---
+
+## 🤝 Contributing
+
+### Contribution Guidelines
+
+1. **Fork** the repository
+2. **Create Feature Branch**: `git checkout -b feature/amazing-feature`
+3. **Commit**: `git commit -m "Add amazing feature"`
+4. **Push**: `git push origin feature/amazing-feature`
+5. **Create Pull Request**
+
+### Code Style
+
+- **TypeScript**: Follow ESLint rules
+- **Commit Messages**: [Conventional Commits](https://www.conventionalcommits.org/)
+  - `feat:` New feature
+  - `fix:` Bug fix
+  - `docs:` Documentation changes
+  - `style:` Code formatting
+  - `refactor:` Refactoring
+  - `test:` Add tests
+  - `chore:` Build/config changes
+
+### Issue Reporting
+
+- **Bugs**: Reproduction steps, browser/OS info, screenshots
+- **Feature Requests**: Detailed description, use cases, mockup images
+
+---
+
+## 📄 License
+
+This project is distributed under the **MIT License**.
+
+```
+MIT License
+
+Copyright (c) 2025 A2F Project
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## 📚 References
+
+### Papers and Documentation
+- [Simplex Noise (Ken Perlin, 2001)](https://www.csee.umbc.edu/~olano/s2002c36/ch02.pdf)
+- [WebGL Specification](https://www.khronos.org/webgl/)
+- [Three.js Documentation](https://threejs.org/docs/)
+
+### Related Projects
+- [Shadertoy](https://www.shadertoy.com/) - WebGL shader playground
+- [The Book of Shaders](https://thebookofshaders.com/) - GLSL learning resource
+- [React Three Fiber Examples](https://docs.pmnd.rs/react-three-fiber/getting-started/examples)
+
+---
+
+## 🙏 Acknowledgments
+
+- **Ken Perlin**: Simplex Noise algorithm
+- **Three.js Team**: Powerful 3D library
+- **Vercel**: Next.js framework and hosting
+- **Supabase**: Open-source Firebase alternative
+
+---
+
+**Made with ❤️ by A2F Team**
+
+[GitHub](https://github.com/your-repo) | [Demo](https://a2f-project.vercel.app) | [Issues](https://github.com/your-repo/issues)
